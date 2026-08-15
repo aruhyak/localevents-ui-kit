@@ -82,3 +82,12 @@ git push --follow-tags
 
 Use **annotated** tags (`-a`). Lightweight tags are skipped by `--follow-tags`
 and consumers will silently keep the old version.
+
+## Licence
+
+**Publicly visible, but not open source.** Copyright © 2026 Aruhya Kambampati,
+all rights reserved — see [LICENSE](LICENSE).
+
+This repo is public only so the project's build tooling can resolve it as a
+dependency without credentials. That is a practical decision, not a grant of
+rights to use the code.
