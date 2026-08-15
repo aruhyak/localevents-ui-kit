@@ -1,0 +1,43 @@
+:host {
+  display: inline-flex;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28em;
+  font-family: var(--le-mono, ui-monospace, Menlo, monospace);
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.22em 0.5em;
+  border-radius: var(--le-r-sm, 4px);
+  white-space: nowrap;
+  line-height: 1.4;
+}
+
+.glyph {
+  font-size: 0.85em;
+}
+
+.tone-neutral {
+  background: var(--le-sunken, #e7e7e2);
+  color: var(--le-ink-3, #6e7480);
+}
+.tone-com {
+  background: var(--le-com-soft, #fae6ee);
+  color: var(--le-com, #c92c68);
+}
+.tone-biz {
+  background: var(--le-biz-soft, #e4edf9);
+  color: var(--le-biz, #1257b0);
+}
+.tone-warn {
+  background: var(--le-warn-soft, #f7eedc);
+  color: var(--le-warn, #9a5c06);
+}
+.tone-good {
+  background: var(--le-good-soft, #e1f3e9);
+  color: var(--le-good, #1b7a46);
+}

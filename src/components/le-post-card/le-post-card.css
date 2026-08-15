@@ -1,0 +1,124 @@
+:host {
+  display: block;
+}
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background: var(--le-surface, #fbfbf9);
+  border: 1px solid var(--le-rule, #d6d6cf);
+  border-left: 3px solid var(--edge, var(--le-rule, #d6d6cf));
+  border-radius: var(--le-r-md, 8px);
+  padding: 0.85rem 1rem 0.9rem;
+  cursor: pointer;
+  transition: border-color 0.12s ease, transform 0.12s ease, box-shadow 0.12s ease;
+  font-family: var(--le-sans, system-ui, sans-serif);
+}
+
+/* The colour encodes who posted — pink individual, blue business. */
+.kind-event    { --edge: var(--le-com, #c92c68); }
+.kind-request  { --edge: var(--le-com, #c92c68); }
+.kind-offer    { --edge: var(--le-biz, #1257b0); }
+
+.card:hover {
+  border-color: var(--le-ink-3, #6e7480);
+  border-left-color: var(--edge);
+  transform: translateY(-1px);
+  box-shadow: var(--le-shadow, 0 2px 8px rgba(0, 0, 0, 0.05));
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--edge);
+  outline-offset: 2px;
+}
+
+.card.claimed {
+  opacity: 0.62;
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.02rem;
+  font-weight: 650;
+  line-height: 1.25;
+  letter-spacing: -0.012em;
+  color: var(--le-ink, #171a21);
+  text-wrap: balance;
+}
+
+.desc {
+  margin: 0;
+  font-size: 0.885rem;
+  line-height: 1.45;
+  color: var(--le-ink-2, #454b57);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  font-size: 0.8rem;
+  color: var(--le-ink-2, #454b57);
+  font-variant-numeric: tabular-nums;
+}
+
+.when { font-weight: 600; color: var(--le-ink, #171a21); }
+.dot  { color: var(--le-ink-3, #6e7480); }
+.price {
+  font-family: var(--le-mono, ui-monospace, monospace);
+  font-size: 0.76rem;
+  color: var(--le-ink-2, #454b57);
+}
+
+.author {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.15rem;
+  padding-top: 0.55rem;
+  border-top: 1px solid var(--le-rule-soft, #e2e2dc);
+  font-size: 0.78rem;
+  color: var(--le-ink-3, #6e7480);
+}
+
+.avatar {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--edge);
+  color: #fff;
+  font-size: 0.66rem;
+  font-weight: 700;
+}
+
+.name { color: var(--le-ink-2, #454b57); font-weight: 550; }
+
+.idv {
+  font-family: var(--le-mono, monospace);
+  font-size: 0.64rem;
+  color: var(--le-good, #1b7a46);
+  letter-spacing: 0.03em;
+}
+
+.hood { margin-left: auto; }
+
+@media (prefers-reduced-motion: reduce) {
+  .card { transition: none; }
+  .card:hover { transform: none; }
+}

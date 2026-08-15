@@ -1,0 +1,98 @@
+/* ============================================================
+   Design tokens — risograph flyer palette.
+   The two accents carry MEANING, not decoration:
+     pink = individual / community      blue = business / venue
+   ============================================================ */
+
+:root {
+  --le-paper:      #F1F1EE;
+  --le-surface:    #FBFBF9;
+  --le-sunken:     #E7E7E2;
+  --le-ink:        #171A21;
+  --le-ink-2:      #454B57;
+  --le-ink-3:      #6E7480;
+  --le-rule:       #D6D6CF;
+  --le-rule-soft:  #E2E2DC;
+
+  --le-com:        #C92C68;   /* individual / community */
+  --le-com-soft:   #FAE6EE;
+  --le-biz:        #1257B0;   /* business / venue */
+  --le-biz-soft:   #E4EDF9;
+  --le-warn:       #9A5C06;   /* gates, unverified, blockers */
+  --le-warn-soft:  #F7EEDC;
+  --le-good:       #1B7A46;   /* verified, licensed */
+  --le-good-soft:  #E1F3E9;
+
+  --le-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --le-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --le-r-sm: 4px;
+  --le-r-md: 8px;
+  --le-r-pill: 100px;
+
+  --le-shadow: 0 1px 2px rgba(23, 26, 33, 0.06), 0 2px 8px rgba(23, 26, 33, 0.04);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --le-paper:     #10131A;
+    --le-surface:   #171B24;
+    --le-sunken:    #0B0E14;
+    --le-ink:       #E8E9E4;
+    --le-ink-2:     #AFB4BF;
+    --le-ink-3:     #7C828F;
+    --le-rule:      #2A303C;
+    --le-rule-soft: #212734;
+
+    --le-com:       #F2739F;
+    --le-com-soft:  #3A1928;
+    --le-biz:       #6BA5F0;
+    --le-biz-soft:  #16283F;
+    --le-warn:      #D9A251;
+    --le-warn-soft: #33270F;
+    --le-good:      #5FC98C;
+    --le-good-soft: #10301F;
+
+    --le-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.25);
+  }
+}
+
+:root[data-theme="dark"] {
+  --le-paper:     #10131A;
+  --le-surface:   #171B24;
+  --le-sunken:    #0B0E14;
+  --le-ink:       #E8E9E4;
+  --le-ink-2:     #AFB4BF;
+  --le-ink-3:     #7C828F;
+  --le-rule:      #2A303C;
+  --le-rule-soft: #212734;
+  --le-com:       #F2739F;
+  --le-com-soft:  #3A1928;
+  --le-biz:       #6BA5F0;
+  --le-biz-soft:  #16283F;
+  --le-warn:      #D9A251;
+  --le-warn-soft: #33270F;
+  --le-good:      #5FC98C;
+  --le-good-soft: #10301F;
+  --le-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+:root[data-theme="light"] {
+  --le-paper:     #F1F1EE;
+  --le-surface:   #FBFBF9;
+  --le-sunken:    #E7E7E2;
+  --le-ink:       #171A21;
+  --le-ink-2:     #454B57;
+  --le-ink-3:     #6E7480;
+  --le-rule:      #D6D6CF;
+  --le-rule-soft: #E2E2DC;
+  --le-com:       #C92C68;
+  --le-com-soft:  #FAE6EE;
+  --le-biz:       #1257B0;
+  --le-biz-soft:  #E4EDF9;
+  --le-warn:      #9A5C06;
+  --le-warn-soft: #F7EEDC;
+  --le-good:      #1B7A46;
+  --le-good-soft: #E1F3E9;
+  --le-shadow: 0 1px 2px rgba(23, 26, 33, 0.06), 0 2px 8px rgba(23, 26, 33, 0.04);
+}

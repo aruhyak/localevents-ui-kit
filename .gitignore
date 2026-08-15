@@ -1,0 +1,10 @@
+node_modules/
+dist/
+loader/
+www/
+.stencil/
+src/components.d.ts
+*.log
+.DS_Store
+.env
+.env.local
