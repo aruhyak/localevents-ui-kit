@@ -29,6 +29,23 @@ jobs:
           git config --global --add url."$AUTH".insteadOf "git+ssh://git@github.com/"
           git config --global --add url."$AUTH".insteadOf "git@github.com:"
 
+
+      # Temporary diagnostic: does the token actually have access? Prints only
+      # an HTTP status code — never the token itself.
+      - name: Verify token access
+        run: |
+          code=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "Authorization: Bearer ${{ secrets.GH_PAT }}" \
+            https://api.github.com/repos/aruhyak/localevents-shared)
+          echo "GET /repos/aruhyak/localevents-shared -> HTTP $code"
+          if [ -z "${{ secrets.GH_PAT }}" ]; then echo "GH_PAT is EMPTY"; fi
+          case "$code" in
+            200) echo "token CAN read the repo" ;;
+            404) echo "token CANNOT see it - wrong scope, or fine-grained without access" ;;
+            401) echo "token invalid or revoked" ;;
+            *)   echo "unexpected status" ;;
+          esac
+
       - run: npm install
 
       - run: npm run build
