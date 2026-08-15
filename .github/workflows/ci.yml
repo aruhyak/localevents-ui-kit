@@ -23,28 +23,14 @@ jobs:
       # HTTPS. --add matters: without it each call REPLACES the previous value.
       - name: Configure git for private deps
         run: |
-          AUTH="https://x-access-token:${{ secrets.GH_PAT }}@github.com/"
+          # Classic PATs authenticate as the USERNAME in the URL.
+          # x-access-token:<token> is the GitHub App form and 404s here.
+          AUTH="https://${{ secrets.GH_PAT }}@github.com/"
           git config --global --add url."$AUTH".insteadOf "https://github.com/"
           git config --global --add url."$AUTH".insteadOf "ssh://git@github.com/"
           git config --global --add url."$AUTH".insteadOf "git+ssh://git@github.com/"
           git config --global --add url."$AUTH".insteadOf "git@github.com:"
 
-
-      # Temporary diagnostic: does the token actually have access? Prints only
-      # an HTTP status code — never the token itself.
-      - name: Verify token access
-        run: |
-          code=$(curl -s -o /dev/null -w "%{http_code}" \
-            -H "Authorization: Bearer ${{ secrets.GH_PAT }}" \
-            https://api.github.com/repos/aruhyak/localevents-shared)
-          echo "GET /repos/aruhyak/localevents-shared -> HTTP $code"
-          if [ -z "${{ secrets.GH_PAT }}" ]; then echo "GH_PAT is EMPTY"; fi
-          case "$code" in
-            200) echo "token CAN read the repo" ;;
-            404) echo "token CANNOT see it - wrong scope, or fine-grained without access" ;;
-            401) echo "token invalid or revoked" ;;
-            *)   echo "unexpected status" ;;
-          esac
 
       - run: npm install
 
