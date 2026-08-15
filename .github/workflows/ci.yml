@@ -13,24 +13,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-
-      # Private @le/* packages install by git tag. The built-in GITHUB_TOKEN
-      # cannot read OTHER private repos, so a PAT (repo scope) is needed as the
-      # GH_PAT secret.
-      #
-      # npm normalises GitHub URLs to git+ssh in package-lock.json regardless of
-      # what package.json says, so all three URL forms must be rewritten to
-      # authenticated HTTPS. --add is required: without it each git config call
-      # REPLACES the previous value instead of appending.
-      - name: Configure git for private deps
-        run: |
-          AUTH="https://x-access-token:${{ secrets.GH_PAT }}@github.com/"
-          git config --global --add url."$AUTH".insteadOf "https://github.com/"
-          git config --global --add url."$AUTH".insteadOf "ssh://git@github.com/"
-          git config --global --add url."$AUTH".insteadOf "git+ssh://git@github.com/"
-          git config --global --add url."$AUTH".insteadOf "git@github.com:"
-          git config --global --list | grep insteadof || true
-
+      # @le/shared and @le/ui-kit are public repos installed by git tag, so no
+      # credentials are needed. Keeping them public is deliberate: they hold
+      # types, distance maths and CSS tokens — nothing secret — and it avoids a
+      # PAT that would silently expire and break CI.
       - run: npm install
 
       - run: npm run build
