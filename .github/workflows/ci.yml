@@ -13,10 +13,22 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      # @le/shared and @le/ui-kit are public repos installed by git tag, so no
-      # credentials are needed. Keeping them public is deliberate: they hold
-      # types, distance maths and CSS tokens — nothing secret — and it avoids a
-      # PAT that would silently expire and break CI.
+
+      # @le/* are PRIVATE repos installed by git tag. The built-in GITHUB_TOKEN
+      # is scoped to this repo only and cannot read them, so a classic PAT with
+      # `repo` scope is required as the GH_PAT secret.
+      #
+      # npm normalises GitHub URLs to git+ssh in package-lock.json whatever
+      # package.json declares, so every URL form is rewritten to authenticated
+      # HTTPS. --add matters: without it each call REPLACES the previous value.
+      - name: Configure git for private deps
+        run: |
+          AUTH="https://x-access-token:${{ secrets.GH_PAT }}@github.com/"
+          git config --global --add url."$AUTH".insteadOf "https://github.com/"
+          git config --global --add url."$AUTH".insteadOf "ssh://git@github.com/"
+          git config --global --add url."$AUTH".insteadOf "git+ssh://git@github.com/"
+          git config --global --add url."$AUTH".insteadOf "git@github.com:"
+
       - run: npm install
 
       - run: npm run build
