@@ -13,11 +13,18 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      # @le/shared installs from a private repo by git tag, so the runner needs
-      # credentials. GITHUB_TOKEN can't read other private repos — use a PAT
-      # stored as the GH_PAT secret (repo scope).
+
+      # Private @le/* packages install by git tag. The built-in GITHUB_TOKEN
+      # cannot read OTHER private repos, so a PAT (repo scope) is required as
+      # the GH_PAT secret. npm resolves `github:` shorthand to SSH, so all
+      # three URL forms are rewritten to authenticated HTTPS.
       - name: Configure git for private deps
         run: |
-          git config --global url."https://${{ secrets.GH_PAT }}@github.com/".insteadOf "https://github.com/"
+          AUTH="https://x-access-token:${{ secrets.GH_PAT }}@github.com/"
+          git config --global url."$AUTH".insteadOf "https://github.com/"
+          git config --global url."$AUTH".insteadOf "ssh://git@github.com/"
+          git config --global url."$AUTH".insteadOf "git@github.com:"
+
       - run: npm install
+
       - run: npm run build
