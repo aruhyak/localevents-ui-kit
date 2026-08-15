@@ -21,7 +21,7 @@
   ],
   "scripts": {
     "build": "stencil build",
-    "dev": "stencil build --watch --serve",
+    "dev": "NODE_ENV=development stencil build --watch --serve",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "prepare": "stencil build"
   },
