@@ -13,33 +13,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-
-      # @le/* are PRIVATE repos installed by git tag. The built-in GITHUB_TOKEN
-      # is scoped to this repo only and cannot read them, so a classic PAT with
-      # `repo` scope is required as the GH_PAT secret.
-      #
-      # npm normalises GitHub URLs to git+ssh in package-lock.json whatever
-      # package.json declares, so every URL form is rewritten to authenticated
-      # HTTPS. --add matters: without it each call REPLACES the previous value.
-      - name: Configure git for private deps
-        run: |
-          # Classic PATs authenticate as the USERNAME in the URL.
-          # x-access-token:<token> is the GitHub App form and 404s here.
-          AUTH="https://${{ secrets.GH_PAT }}@github.com/"
-          git config --global --add url."$AUTH".insteadOf "https://github.com/"
-          git config --global --add url."$AUTH".insteadOf "ssh://git@github.com/"
-          git config --global --add url."$AUTH".insteadOf "git+ssh://git@github.com/"
-          git config --global --add url."$AUTH".insteadOf "git@github.com:"
-
-
-      - name: Token type
-        run: |
-          T="${{ secrets.GH_PAT }}"
-          echo "prefix: $(printf '%s' "$T" | cut -c1-4)...  length: ${#T}"
-          echo "ghp_ = classic (works with git)   gith = fine-grained (needs Contents:Read)"
-          git ls-remote https://${{ secrets.GH_PAT }}@github.com/aruhyak/localevents-shared.git >/dev/null 2>&1 \
-            && echo "git ls-remote: OK" || echo "git ls-remote: FAILED"
-
+      # @le/shared and @le/ui-kit are public repos installed by git tag, so the
+      # runner needs no credentials. Kept public deliberately: they hold types,
+      # distance maths and CSS tokens, nothing secret. Making them private needs
+      # a PAT, and git-over-HTTPS auth for private deps proved unreliable.
       - run: npm install
 
       - run: npm run build
