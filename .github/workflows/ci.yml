@@ -32,6 +32,14 @@ jobs:
           git config --global --add url."$AUTH".insteadOf "git@github.com:"
 
 
+      - name: Token type
+        run: |
+          T="${{ secrets.GH_PAT }}"
+          echo "prefix: $(printf '%s' "$T" | cut -c1-4)...  length: ${#T}"
+          echo "ghp_ = classic (works with git)   gith = fine-grained (needs Contents:Read)"
+          git ls-remote https://${{ secrets.GH_PAT }}@github.com/aruhyak/localevents-shared.git >/dev/null 2>&1 \
+            && echo "git ls-remote: OK" || echo "git ls-remote: FAILED"
+
       - run: npm install
 
       - run: npm run build
