@@ -39,6 +39,17 @@
   /* the loud one — reserve for genuine attention, never body text */
   --le-highlight:  #FFFB08;   /* Banana King */
 
+  /* Text on Banana King. Must stay Halite in BOTH themes — the button is
+     always yellow, so it never follows --le-ink. White on #FFFB08 is
+     unreadable; Halite on it is ~19:1. */
+  --le-on-highlight: #09324A;
+
+  /* MP213 has no red, but destructive actions need one. A brick that sits with
+     the teal and cream rather than Bootstrap's #c0392b, which reads borrowed. */
+  --le-danger:      #A8372B;
+  --le-danger-soft: #F6E3DF;
+
+
   --le-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --le-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 
@@ -106,6 +117,11 @@
 
     --le-highlight: #FFFB08;
 
+  --le-on-highlight: #09324A;
+  --le-danger:       #E8796B;
+  --le-danger-soft:  #3A1A15;
+
+
     --le-shadow: 0 1px 2px rgba(0, 0, 0, 0.45), 0 2px 8px rgba(0, 0, 0, 0.3);
 
   --le-glass:        color-mix(in srgb, var(--le-paper) 52%, transparent);
@@ -137,6 +153,10 @@
   --le-warn:      #FFFB08;
   --le-warn-soft: #3A3600;
   --le-highlight: #FFFB08;
+
+  --le-on-highlight: #09324A;
+  --le-danger:       #E8796B;
+  --le-danger-soft:  #3A1A15;
   --le-shadow: 0 1px 2px rgba(0, 0, 0, 0.45), 0 2px 8px rgba(0, 0, 0, 0.3);
 
   --le-glass:        color-mix(in srgb, var(--le-paper) 52%, transparent);
@@ -167,6 +187,16 @@
   --le-warn:      #6B5A00;
   --le-warn-soft: #FFFDBF;
   --le-highlight: #FFFB08;
+
+  /* Text on Banana King. Must stay Halite in BOTH themes — the button is
+     always yellow, so it never follows --le-ink. White on #FFFB08 is
+     unreadable; Halite on it is ~19:1. */
+  --le-on-highlight: #09324A;
+
+  /* MP213 has no red, but destructive actions need one. A brick that sits with
+     the teal and cream rather than Bootstrap's #c0392b, which reads borrowed. */
+  --le-danger:      #A8372B;
+  --le-danger-soft: #F6E3DF;
   --le-shadow: 0 1px 2px rgba(9, 50, 74, 0.07), 0 2px 8px rgba(9, 50, 74, 0.05);
 
   /* ── surfaces ──────────────────────────────────────────────────────────
