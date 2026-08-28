@@ -13,7 +13,11 @@
       "types": "./dist/components/index.d.ts",
       "import": "./dist/components/index.js"
     },
-    "./tokens.css": "./src/tokens.css"
+    "./tokens.css": "./src/tokens.css",
+    "./post-detail": {
+      "types": "./dist/components/le-post-detail.d.ts",
+      "import": "./dist/components/le-post-detail.js"
+    }
   },
   "files": [
     "dist",

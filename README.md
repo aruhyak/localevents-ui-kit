@@ -91,3 +91,21 @@ all rights reserved — see [LICENSE](LICENSE).
 This repo is public only so the project's build tooling can resolve it as a
 dependency without credentials. That is a practical decision, not a grant of
 rights to use the code.
+
+## Importing a standalone component
+
+Stencil's `dist/components/index.js` only registers components that another
+component references. `le-post-card` pulls in `le-badge`, so both are there;
+`le-post-detail` is referenced by nothing in this package, so it is compiled to
+its own file and left out of the index — importing `@le/ui-kit` alone will not
+define it.
+
+Standalone components therefore get an explicit subpath, and each self-registers
+on import:
+
+```ts
+import '@le/ui-kit/post-detail';   // defines <le-post-detail>
+```
+
+Add a new subpath to `exports` whenever a component is used directly by a
+consumer rather than by another component in this package.
