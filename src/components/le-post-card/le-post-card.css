@@ -126,7 +126,37 @@
   letter-spacing: 0.03em;
 }
 
-.hood { margin-left: auto; }
+.hood {
+  margin-left: auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Sits at the end of the author row, where there is spare width and it cannot
+   push the title or meta around. The card is itself a button, so this one
+   stops its click from also opening the post. */
+.save {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  margin: -0.35rem -0.35rem -0.35rem 0.15rem;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: none;
+  color: var(--le-ink-3, #6e7480);
+  cursor: pointer;
+  transition: color 0.15s ease, background 0.15s ease, transform 0.12s ease;
+}
+.save svg { width: 17px; height: 17px; }
+.save:hover { background: var(--le-sunken, #eceade); color: var(--le-ink, #09324A); }
+.save:active { transform: scale(0.9); }
+.save.on { color: var(--le-com, #1B6F81); }
+.save:focus-visible { outline: 2px solid var(--le-com, #1B6F81); outline-offset: 1px; }
 
 @media (prefers-reduced-motion: reduce) {
   .card { transition: none; }

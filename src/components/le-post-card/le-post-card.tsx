@@ -1,6 +1,6 @@
-import { Component, Prop, Event, EventEmitter, h, Host } from '@stencil/core';
+import { Component, Prop, State, Event, EventEmitter, h, Host } from '@stencil/core';
 import type { Post, EventPost, RequestPost, OfferPost } from '@le/shared';
-import { formatDistance, formatWhen, formatRange, requiresLicence } from '@le/shared';
+import { formatDistance, formatWhen, formatRange, requiresLicence, isSaved, toggleSave } from '@le/shared';
 
 /**
  * One post in the feed. Renders all three shapes from a single component,
@@ -16,12 +16,36 @@ export class LePostCard {
   @Prop() post!: Post;
   @Prop() distanceKm = 0;
 
-  /** Fragments never navigate directly — they emit and the shell routes. */
+  @State() saved = false;
+
+  /**
+   * Carries the whole post, not just an id.
+   *
+   * The shell has no post lookup and shouldn't need one — posts live in the
+   * fragment that queried for them, and a post written on this device isn't in
+   * the seed data at all, so an id would be unresolvable. The card already
+   * holds everything the detail view needs.
+   */
   @Event({ eventName: 'le:open-post', bubbles: true, composed: true })
-  openPost!: EventEmitter<{ id: string; kind: string }>;
+  openPost!: EventEmitter<{ post: Post; distanceKm: number }>;
+
+  @Event({ eventName: 'le:toggle-save', bubbles: true, composed: true })
+  toggleSaved!: EventEmitter<{ id: string; saved: boolean }>;
+
+  componentWillLoad() {
+    this.saved = isSaved(this.post.id);
+  }
 
   private open = () => {
-    this.openPost.emit({ id: this.post.id, kind: this.post.kind });
+    this.openPost.emit({ post: this.post, distanceKm: this.distanceKm });
+  };
+
+  private onSave = (e: MouseEvent) => {
+    // The card is itself a button; without this, saving also opens the post.
+    e.stopPropagation();
+    // Trust what persisted, not what we asked for — a save can fail on quota.
+    this.saved = toggleSave(this.post.id);
+    this.toggleSaved.emit({ id: this.post.id, saved: this.saved });
   };
 
   private onKey = (e: KeyboardEvent) => {
@@ -142,6 +166,25 @@ export class LePostCard {
               ? <span class="idv" title="Identity verified">ID&nbsp;✓</span>
               : null}
             <span class="hood">{p.neighbourhood}</span>
+
+            <button
+              class={{ save: true, on: this.saved }}
+              type="button"
+              aria-pressed={String(this.saved)}
+              aria-label={this.saved ? 'Saved — tap to remove' : 'Save this post'}
+              title={this.saved ? 'Saved' : 'Save'}
+              onClick={this.onSave}
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M6.5 3.5h11a1 1 0 0 1 1 1v15.2a.6.6 0 0 1-.94.5L12 16.4l-5.56 3.8a.6.6 0 0 1-.94-.5V4.5a1 1 0 0 1 1-1Z"
+                  fill={this.saved ? 'currentColor' : 'none'}
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </button>
           </div>
         </article>
       </Host>
