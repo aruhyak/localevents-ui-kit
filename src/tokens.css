@@ -1,27 +1,43 @@
 /* ============================================================
-   Design tokens — risograph flyer palette.
+   Design tokens — MP213 palette.
+
+     Picket Fence  #F3F2EA    Fennec Fox    #DAD7C8
+     Cassiopeia    #AED0C9    Billabong     #1B6F81
+     Halite Blue   #09324A    Banana King   #FFFB08
+
    The two accents carry MEANING, not decoration:
-     pink = individual / community      blue = business / venue
+     Billabong (teal) = individual / community
+     Halite   (navy)  = business / venue
    ============================================================ */
 
 :root {
-  --le-paper:      #F1F1EE;
-  --le-surface:    #FBFBF9;
-  --le-sunken:     #E7E7E2;
-  --le-ink:        #171A21;
-  --le-ink-2:      #454B57;
-  --le-ink-3:      #6E7480;
-  --le-rule:       #D6D6CF;
-  --le-rule-soft:  #E2E2DC;
+  /* grounds */
+  --le-paper:      #F3F2EA;   /* Picket Fence */
+  --le-surface:    #FBFAF4;   /* Picket Fence, lifted */
+  --le-sunken:     #DAD7C8;   /* Fennec Fox */
 
-  --le-com:        #C92C68;   /* individual / community */
-  --le-com-soft:   #FAE6EE;
-  --le-biz:        #1257B0;   /* business / venue */
-  --le-biz-soft:   #E4EDF9;
-  --le-warn:       #9A5C06;   /* gates, unverified, blockers */
-  --le-warn-soft:  #F7EEDC;
-  --le-good:       #1B7A46;   /* verified, licensed */
-  --le-good-soft:  #E1F3E9;
+  /* text — Halite Blue reads as near-black but stays in-palette */
+  --le-ink:        #09324A;
+  --le-ink-2:      #3C5A6D;
+  --le-ink-3:      #6B8493;
+
+  --le-rule:       #DAD7C8;   /* Fennec Fox */
+  --le-rule-soft:  #E8E6DB;
+
+  /* meaning */
+  --le-com:        #1B6F81;   /* Billabong — individual / community */
+  --le-com-soft:   #E2EFF1;
+  --le-biz:        #09324A;   /* Halite Blue — business / venue */
+  --le-biz-soft:   #DEE7ED;
+
+  /* status */
+  --le-good:       #2C7A6B;   /* verified — sits beside Cassiopeia */
+  --le-good-soft:  #AED0C9;   /* Cassiopeia */
+  --le-warn:       #6B5A00;   /* readable text tone for Banana King */
+  --le-warn-soft:  #FFFDBF;   /* Banana King, softened */
+
+  /* the loud one — reserve for genuine attention, never body text */
+  --le-highlight:  #FFFB08;   /* Banana King */
 
   --le-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --le-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
@@ -30,69 +46,145 @@
   --le-r-md: 8px;
   --le-r-pill: 100px;
 
-  --le-shadow: 0 1px 2px rgba(23, 26, 33, 0.06), 0 2px 8px rgba(23, 26, 33, 0.04);
+  --le-shadow: 0 1px 2px rgba(9, 50, 74, 0.07), 0 2px 8px rgba(9, 50, 74, 0.05);
+
+  /* ── surfaces ──────────────────────────────────────────────────────────
+     Shared by the shell AND every fragment, so the whole app reads as one
+     surface system. Fragments must use these rather than inventing panels. */
+
+  --le-glass:        color-mix(in srgb, var(--le-paper) 58%, transparent);
+  --le-glass-strong: color-mix(in srgb, var(--le-paper) 74%, transparent);
+  --le-blur:         blur(44px) saturate(190%) brightness(1.06);
+  --le-blur-sm:      blur(20px) saturate(165%) brightness(1.04);
+
+
+  /* Specular sheen — layered over a glass surface's own background so light
+     appears to catch the top edge. This is what separates "glass" from
+     "translucent panel". */
+  --le-sheen: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.42) 0%,
+    rgba(255, 255, 255, 0.10) 22%,
+    rgba(255, 255, 255, 0.00) 55%
+  );
+
+  --le-r-sheet: 26px;      /* a sheet lifted over content */
+  --le-r-card:  14px;      /* cards inside a sheet */
+
+  --le-shadow-sheet: 0 1px 0 rgba(255, 255, 255, 0.75) inset,
+                     0 0 0 1px rgba(255, 255, 255, 0.22) inset,
+                     0 -22px 50px rgba(4, 27, 40, 0.20);
+  --le-shadow-card:  0 1px 0 rgba(255, 255, 255, 0.65) inset,
+                     0 0 0 1px rgba(255, 255, 255, 0.18) inset,
+                     0 8px 24px rgba(9, 50, 74, 0.10);
 }
+
+/* ── dark ─────────────────────────────────────────────────────────────────
+   Halite Blue becomes the ground; Picket Fence becomes the ink. The accents
+   lighten so they stay legible on a dark navy field.                        */
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --le-paper:     #10131A;
-    --le-surface:   #171B24;
-    --le-sunken:    #0B0E14;
-    --le-ink:       #E8E9E4;
-    --le-ink-2:     #AFB4BF;
-    --le-ink-3:     #7C828F;
-    --le-rule:      #2A303C;
-    --le-rule-soft: #212734;
+    --le-paper:     #062435;
+    --le-surface:   #09324A;   /* Halite Blue */
+    --le-sunken:    #041B28;
+    --le-ink:       #F3F2EA;   /* Picket Fence */
+    --le-ink-2:     #BFCCD3;
+    --le-ink-3:     #859AA6;
+    --le-rule:      #16465F;
+    --le-rule-soft: #0E3A51;
 
-    --le-com:       #F2739F;
-    --le-com-soft:  #3A1928;
-    --le-biz:       #6BA5F0;
-    --le-biz-soft:  #16283F;
-    --le-warn:      #D9A251;
-    --le-warn-soft: #33270F;
-    --le-good:      #5FC98C;
-    --le-good-soft: #10301F;
+    --le-com:       #6FC3D2;
+    --le-com-soft:  #0D3F4B;
+    --le-biz:       #AED0C9;   /* Cassiopeia reads as the business tone here */
+    --le-biz-soft:  #0B3B45;
 
-    --le-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.25);
+    --le-good:      #AED0C9;   /* Cassiopeia */
+    --le-good-soft: #10403A;
+    --le-warn:      #FFFB08;   /* Banana King */
+    --le-warn-soft: #3A3600;
+
+    --le-highlight: #FFFB08;
+
+    --le-shadow: 0 1px 2px rgba(0, 0, 0, 0.45), 0 2px 8px rgba(0, 0, 0, 0.3);
+
+  --le-glass:        color-mix(in srgb, var(--le-paper) 52%, transparent);
+  --le-glass-strong: color-mix(in srgb, var(--le-paper) 70%, transparent);
+  --le-shadow-sheet: 0 1px 0 rgba(255, 255, 255, 0.16) inset,
+                     0 0 0 1px rgba(255, 255, 255, 0.07) inset,
+                     0 -22px 50px rgba(0, 0, 0, 0.45);
+  --le-shadow-card:  0 1px 0 rgba(255, 255, 255, 0.13) inset,
+                     0 0 0 1px rgba(255, 255, 255, 0.06) inset,
+                     0 8px 24px rgba(0, 0, 0, 0.32);
   }
 }
 
 :root[data-theme="dark"] {
-  --le-paper:     #10131A;
-  --le-surface:   #171B24;
-  --le-sunken:    #0B0E14;
-  --le-ink:       #E8E9E4;
-  --le-ink-2:     #AFB4BF;
-  --le-ink-3:     #7C828F;
-  --le-rule:      #2A303C;
-  --le-rule-soft: #212734;
-  --le-com:       #F2739F;
-  --le-com-soft:  #3A1928;
-  --le-biz:       #6BA5F0;
-  --le-biz-soft:  #16283F;
-  --le-warn:      #D9A251;
-  --le-warn-soft: #33270F;
-  --le-good:      #5FC98C;
-  --le-good-soft: #10301F;
-  --le-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.25);
+  --le-paper:     #062435;
+  --le-surface:   #09324A;
+  --le-sunken:    #041B28;
+  --le-ink:       #F3F2EA;
+  --le-ink-2:     #BFCCD3;
+  --le-ink-3:     #859AA6;
+  --le-rule:      #16465F;
+  --le-rule-soft: #0E3A51;
+  --le-com:       #6FC3D2;
+  --le-com-soft:  #0D3F4B;
+  --le-biz:       #AED0C9;
+  --le-biz-soft:  #0B3B45;
+  --le-good:      #AED0C9;
+  --le-good-soft: #10403A;
+  --le-warn:      #FFFB08;
+  --le-warn-soft: #3A3600;
+  --le-highlight: #FFFB08;
+  --le-shadow: 0 1px 2px rgba(0, 0, 0, 0.45), 0 2px 8px rgba(0, 0, 0, 0.3);
+
+  --le-glass:        color-mix(in srgb, var(--le-paper) 52%, transparent);
+  --le-glass-strong: color-mix(in srgb, var(--le-paper) 70%, transparent);
+  --le-shadow-sheet: 0 1px 0 rgba(255, 255, 255, 0.16) inset,
+                     0 0 0 1px rgba(255, 255, 255, 0.07) inset,
+                     0 -22px 50px rgba(0, 0, 0, 0.45);
+  --le-shadow-card:  0 1px 0 rgba(255, 255, 255, 0.13) inset,
+                     0 0 0 1px rgba(255, 255, 255, 0.06) inset,
+                     0 8px 24px rgba(0, 0, 0, 0.32);
 }
 
 :root[data-theme="light"] {
-  --le-paper:     #F1F1EE;
-  --le-surface:   #FBFBF9;
-  --le-sunken:    #E7E7E2;
-  --le-ink:       #171A21;
-  --le-ink-2:     #454B57;
-  --le-ink-3:     #6E7480;
-  --le-rule:      #D6D6CF;
-  --le-rule-soft: #E2E2DC;
-  --le-com:       #C92C68;
-  --le-com-soft:  #FAE6EE;
-  --le-biz:       #1257B0;
-  --le-biz-soft:  #E4EDF9;
-  --le-warn:      #9A5C06;
-  --le-warn-soft: #F7EEDC;
-  --le-good:      #1B7A46;
-  --le-good-soft: #E1F3E9;
-  --le-shadow: 0 1px 2px rgba(23, 26, 33, 0.06), 0 2px 8px rgba(23, 26, 33, 0.04);
+  --le-paper:     #F3F2EA;
+  --le-surface:   #FBFAF4;
+  --le-sunken:    #DAD7C8;
+  --le-ink:       #09324A;
+  --le-ink-2:     #3C5A6D;
+  --le-ink-3:     #6B8493;
+  --le-rule:      #DAD7C8;
+  --le-rule-soft: #E8E6DB;
+  --le-com:       #1B6F81;
+  --le-com-soft:  #E2EFF1;
+  --le-biz:       #09324A;
+  --le-biz-soft:  #DEE7ED;
+  --le-good:      #2C7A6B;
+  --le-good-soft: #AED0C9;
+  --le-warn:      #6B5A00;
+  --le-warn-soft: #FFFDBF;
+  --le-highlight: #FFFB08;
+  --le-shadow: 0 1px 2px rgba(9, 50, 74, 0.07), 0 2px 8px rgba(9, 50, 74, 0.05);
+
+  /* ── surfaces ──────────────────────────────────────────────────────────
+     Shared by the shell AND every fragment, so the whole app reads as one
+     surface system. Fragments must use these rather than inventing panels. */
+
+  --le-glass:        color-mix(in srgb, var(--le-paper) 58%, transparent);
+  --le-glass-strong: color-mix(in srgb, var(--le-paper) 74%, transparent);
+  --le-blur:         blur(44px) saturate(190%) brightness(1.06);
+  --le-blur-sm:      blur(20px) saturate(165%) brightness(1.04);
+
+  --le-r-sheet: 26px;      /* a sheet lifted over content */
+  --le-r-card:  14px;      /* cards inside a sheet */
+
+  --le-shadow-sheet: 0 1px 0 rgba(255, 255, 255, 0.75) inset,
+                     0 0 0 1px rgba(255, 255, 255, 0.22) inset,
+                     0 -22px 50px rgba(4, 27, 40, 0.20);
+  --le-shadow-card:  0 1px 0 rgba(255, 255, 255, 0.65) inset,
+                     0 0 0 1px rgba(255, 255, 255, 0.18) inset,
+                     0 8px 24px rgba(9, 50, 74, 0.10);
 }
