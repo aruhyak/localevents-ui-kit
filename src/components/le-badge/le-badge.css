@@ -1,3 +1,13 @@
+/* Shadow DOM does NOT inherit the host page's reset — a `box-sizing:
+   border-box` rule in the shell stops at the shadow boundary. Without this,
+   any `width: 100%` element adds its padding on top of 100% and overflows its
+   container. Every fragment needs its own copy. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 :host {
   display: inline-flex;
 }
