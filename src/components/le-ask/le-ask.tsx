@@ -138,7 +138,8 @@ export class LeAsk {
         >
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M20.4 11.6a7.7 7.7 0 0 1-10.3 7.3L4.4 20.4l1.5-5.7a7.7 7.7 0 1 1 14.5-3.1Z"/>
+            <path d="M4 20.4l.9-3.6a2 2 0 0 1 .53-.95l9.9-9.9a2 2 0 0 1 2.83 0l1.87 1.87a2 2 0 0 1 0 2.83l-9.9 9.9a2 2 0 0 1-.95.53Z"/>
+            <path d="M13.6 6.6l3.8 3.8"/>
           </svg>
         </a>
       </Host>
