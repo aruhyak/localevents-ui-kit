@@ -12,63 +12,106 @@
   display: block;
 }
 
+/* ── image-led card ──────────────────────────────────────────────────────
+   The picture is the card and the text is its caption. No description: two
+   lines of prose per card is what turned thirty events into fifteen screens,
+   and it is not what anyone reads before deciding to tap.                   */
+
 .card {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  background: var(--le-surface, #fbfbf9);
-  border: 1px solid var(--le-rule, #d6d6cf);
-  border-left: 3px solid var(--edge, var(--le-rule, #d6d6cf));
-  border-radius: var(--le-r-card, 14px);
-  padding: 0.85rem 1rem 0.9rem;
+  display: block;
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  text-align: left;
   cursor: pointer;
-  transition: border-color 0.12s ease, transform 0.12s ease, box-shadow 0.12s ease;
-  font-family: var(--le-sans, system-ui, sans-serif);
+  -webkit-tap-highlight-color: transparent;
+}
+.card:focus-visible { outline: 2px solid var(--le-com); outline-offset: 4px; border-radius: var(--le-r-card); }
+
+.cover {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  border-radius: var(--le-r-card);
+  overflow: hidden;
+  background: var(--le-sunken, #eceade);
+  /* The image is the whole card, so its edge does the work a border used to.
+     A visible 1px rule around a photograph reads as a stock template. */
+  box-shadow: 0 1px 2px rgba(9, 50, 74, 0.06),
+              0 10px 24px -14px rgba(9, 50, 74, 0.28);
 }
 
-/* The colour encodes who posted — pink individual, blue business. */
-.kind-event    { --edge: var(--le-com, #c92c68); }
-.kind-request  { --edge: var(--le-com, #c92c68); }
-.kind-offer    { --edge: var(--le-biz, #1257b0); }
-
-.card:hover {
-  border-color: var(--le-ink-3, #6e7480);
-  border-left-color: var(--edge);
-  transform: translateY(-1px);
-  box-shadow: var(--le-shadow-card);
+.cover img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+.card:hover .cover img { transform: scale(1.035); }
+@media (prefers-reduced-motion: reduce) {
+  .cover img, .card:hover .cover img { transition: none; transform: none; }
 }
 
-.card:focus-visible {
-  outline: 2px solid var(--edge);
-  outline-offset: 2px;
-}
-
-.card.claimed {
-  opacity: 0.62;
-}
-
+/* Over the image, bottom-left, on a scrim so a badge stays legible whatever
+   the photo behind it happens to be. */
 .badges {
+  position: absolute;
+  left: 8px;
+  right: 46px;
+  bottom: 8px;
   display: flex;
   flex-wrap: wrap;
-  gap: 0.3rem;
+  gap: 4px;
+  min-width: 0;
 }
+
+.cover::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 58%;
+  pointer-events: none;
+  background: linear-gradient(rgba(9, 50, 74, 0), rgba(9, 50, 74, 0.42));
+}
+.badges { z-index: 1; }
+
+.save {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  z-index: 1;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: none;
+  color: #fff;
+  cursor: pointer;
+  filter: drop-shadow(0 1px 3px rgba(9, 50, 74, 0.5));
+  transition: transform 0.12s ease;
+}
+.save svg { width: 22px; height: 22px; }
+.save.on { color: var(--le-highlight); }
+.save:active { transform: scale(0.88); }
+.save:focus-visible { outline: 2px solid #fff; outline-offset: 1px; }
+
+.text { padding: 9px 2px 0; min-width: 0; }
 
 .title {
-  margin: 0;
-  font-size: 1.02rem;
-  font-weight: 650;
+  font-family: var(--le-display);
+  letter-spacing: var(--le-track-tight);
+  margin: 0 0 2px;
+  font-size: 1rem;
+  font-weight: 700;
   line-height: 1.25;
-  letter-spacing: -0.012em;
-  color: var(--le-ink, #171a21);
-  text-wrap: balance;
-}
-
-.desc {
-  margin: 0;
-  font-size: 0.885rem;
-  line-height: 1.45;
-  color: var(--le-ink-2, #454b57);
+  color: var(--le-ink);
+  /* Two lines maximum. A four-line title breaks the grid rhythm, which is
+     most of what makes a card grid look composed. */
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -76,123 +119,126 @@
 }
 
 .meta {
+  margin: 0;
   display: flex;
   align-items: center;
-  gap: 0.4rem;
-  flex-wrap: wrap;
-  font-size: 0.8rem;
-  color: var(--le-ink-2, #454b57);
-  font-variant-numeric: tabular-nums;
-}
-
-.when { font-weight: 600; color: var(--le-ink, #171a21); }
-.dot  { color: var(--le-ink-3, #6e7480); }
-.price {
-  font-family: var(--le-mono, ui-monospace, monospace);
-  font-size: 0.76rem;
-  color: var(--le-ink-2, #454b57);
-}
-
-.author {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  margin-top: 0.15rem;
-  padding-top: 0.55rem;
-  border-top: 1px solid var(--le-rule-soft, #e2e2dc);
-  font-size: 0.78rem;
-  color: var(--le-ink-3, #6e7480);
-}
-
-.avatar {
-  display: grid;
-  place-items: center;
-  width: 20px;
-  height: 20px;
-  flex: none;
-  border-radius: 50%;
-  background: var(--edge);
-  color: #fff;
-  font-size: 0.66rem;
-  font-weight: 700;
-}
-
-.name { color: var(--le-ink-2, #454b57); font-weight: 550; }
-
-.idv {
-  font-family: var(--le-mono, monospace);
-  font-size: 0.64rem;
-  color: var(--le-good, #1b7a46);
-  letter-spacing: 0.03em;
-}
-
-.hood {
-  margin-left: auto;
+  gap: 5px;
   min-width: 0;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--le-ink-2);
+}
+.when { white-space: nowrap; }
+.dot { color: var(--le-ink-3); }
+.dist { color: var(--le-ink-3); white-space: nowrap; }
+
+.foot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  margin: 3px 0 0;
+  font-size: 0.8rem;
+  color: var(--le-ink-3);
+}
+.price { font-weight: 700; color: var(--le-ink); }
+.who {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  margin-left: auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.idv {
+  flex: none;
+  font-family: var(--le-mono);
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: var(--le-good);
+}
+
+/* A finished post reads as past without being hidden. */
+:host(.faded) .card, .claimed { opacity: 0.62; }
+
+/* iOS Safari zooms the page when a control under 16px takes focus. */
+input, textarea, select { font-size: 16px !important; }
+
+/* ── compact row ─────────────────────────────────────────────────────────
+   For everything past the first group. ~52px against the card's ~250px, so a
+   long tail of posts costs a few screens instead of dozens. Same tap target,
+   same open behaviour — only the density changes.                         */
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: 100%;
+  min-width: 0;
+  padding: 8px 10px;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.row:focus-visible { outline: 2px solid var(--le-com); outline-offset: -2px; border-radius: var(--le-r-sm); }
+
+.row-img {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  object-fit: cover;
+  background: var(--le-sunken, #eceade);
+}
+
+.row-text { display: flex; flex-direction: column; min-width: 0; flex: 1 1 auto; }
+
+.row-title {
+  font-size: 0.9rem;
+  font-weight: 650;
+  color: var(--le-ink);
+  /* One line. A wrapping title is what turns a row back into a card. */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.row-sub {
+  font-size: 0.76rem;
+  color: var(--le-ink-3);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-/* Sits at the end of the author row, where there is spare width and it cannot
-   push the title or meta around. The card is itself a button, so this one
-   stops its click from also opening the post. */
-.save {
-  flex: none;
-  display: grid;
-  place-items: center;
-  width: 30px;
-  height: 30px;
-  margin: -0.35rem -0.35rem -0.35rem 0.15rem;
-  padding: 0;
-  border: none;
-  border-radius: 50%;
-  background: none;
-  color: var(--le-ink-3, #6e7480);
-  cursor: pointer;
-  transition: color 0.15s ease, background 0.15s ease, transform 0.12s ease;
-}
-.save svg { width: 17px; height: 17px; }
-.save:hover { background: var(--le-sunken, #eceade); color: var(--le-ink, #09324A); }
-.save:active { transform: scale(0.9); }
-.save.on { color: var(--le-com, #1B6F81); }
-.save:focus-visible { outline: 2px solid var(--le-com, #1B6F81); outline-offset: 1px; }
-
-@media (prefers-reduced-motion: reduce) {
-  .card { transition: none; }
-  .card:hover { transform: none; }
-}
-
-/* ── thumbnail ──────────────────────────────────────────────────────────── */
-
-.body {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.7rem;
-  /* 0, not auto: without it a long word in the title sets the row's floor and
-     pushes the thumbnail out of the card. */
-  min-width: 0;
-}
-
-.main {
-  flex: 1 1 auto;
+.row-right {
+  /* Capped, not `flex: none`. An offer's availability is free text — "Most
+     evenings, weekends by arrangement" — and unbounded it squeezed the title
+     down to a single letter. The title is the thing being scanned, so it wins
+     the argument over space. */
+  flex: 0 1 auto;
+  max-width: 42%;
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  align-items: flex-end;
+  gap: 1px;
 }
-
-.thumb {
-  flex: none;
-  width: 76px;
-  height: 76px;
-  border-radius: var(--le-r-sm, 8px);
-  object-fit: cover;
-  background: var(--le-sunken, #eceade);
-  border: 1px solid var(--le-rule-soft, #e2e2dc);
+.row-when {
+  max-width: 100%;
+  font-size: 0.78rem;
+  font-weight: 650;
+  color: var(--le-ink-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-
-/* Narrow phones need the width for words more than for a picture. */
-@media (max-width: 340px) {
-  .thumb { display: none; }
+.row-dist {
+  font-family: var(--le-mono);
+  font-size: 0.68rem;
+  color: var(--le-ink-3);
+  white-space: nowrap;
 }

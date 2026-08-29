@@ -81,7 +81,9 @@
 
 .grab { width: 38px; height: 4px; margin: 0 auto; border-radius: 2px; background: var(--le-rule); flex: none; }
 
-.title { margin: 0.2rem 0 0.2rem; font-size: 1.25rem; font-weight: 800; letter-spacing: -0.02em; }
+.title {
+  font-family: var(--le-display);
+  letter-spacing: var(--le-track-display); margin: 0.2rem 0 0.2rem; font-size: 1.25rem; font-weight: 800; letter-spacing: -0.02em; }
 
 .f { display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; }
 .k { font-size: 0.78rem; font-weight: 700; color: var(--le-ink); }
@@ -218,3 +220,47 @@
 /* iOS Safari zooms the whole page when a field under 16px takes focus and
    never zooms back out. */
 input, textarea, select { font-size: 16px !important; }
+
+/* ── page mode ───────────────────────────────────────────────────────────
+   Same form, no sheet around it. It is the screen, so it scrolls with the
+   document and needs no height cap of its own.                            */
+
+:host(.as-page) { display: block; }
+
+:host(.as-page) .sheet,
+:host(.as-page) div > div {
+  max-width: none;
+  max-height: none;
+  overflow: visible;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
+  contain: none;
+}
+
+:host(.as-page) .title { margin-top: 0; }
+
+/* The sheet supplied the gap between fields; in page mode the wrapper has to. */
+:host(.as-page) div > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+:host(.as-page) .foot {
+  margin-top: 1.2rem;
+  padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+}
+
+/* Cancel is an anchor in page mode, so it needs the button's look — an
+   unstyled <a> renders as a blue underlined link in the middle of a form. */
+a.ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}

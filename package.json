@@ -34,7 +34,7 @@
     "prepare": "stencil build"
   },
   "dependencies": {
-    "@le/shared": "github:aruhyak/localevents-shared#v0.13.0"
+    "@le/shared": "github:aruhyak/localevents-shared#v0.14.0"
   },
   "devDependencies": {
     "@stencil/core": "^4.22.2",

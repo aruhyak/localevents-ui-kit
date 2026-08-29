@@ -92,6 +92,8 @@
 }
 
 .title {
+  font-family: var(--le-display);
+  letter-spacing: var(--le-track-display);
   margin: 0 0 0.7rem;
   font-size: 1.32rem;
   line-height: 1.25;
@@ -510,3 +512,79 @@ input, textarea, select { font-size: 16px !important; }
 .write-btn:focus-visible { outline: 2px solid var(--le-com); outline-offset: 2px; }
 
 .thread + .thread { margin-top: 0.5rem; }
+
+/* ── page mode ───────────────────────────────────────────────────────────
+   Same content, different frame. As a page there is no scrim to tap away,
+   no rounded top, and no height cap — it is the screen, so it scrolls with
+   the document rather than inside itself.                                  */
+
+:host(.page) .scrim {
+  position: static;
+  display: block;
+  height: auto;
+  overflow: visible;
+  background: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  animation: none;
+}
+
+:host(.page) .sheet {
+  max-width: none;
+  max-height: none;
+  border: none;
+  border-radius: 0;
+  background: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
+  contain: none;
+  animation: none;
+}
+
+:host(.page) .body {
+  overflow: visible;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+:host(.page) .head { padding-left: 0; padding-right: 0; }
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin: 0 0 0.6rem -0.4rem;
+  padding: 0.4rem 0.6rem;
+  border: none;
+  border-radius: var(--le-r-pill);
+  background: none;
+  font-family: inherit;
+  font-size: 0.86rem;
+  font-weight: 650;
+  color: var(--le-ink-2);
+  cursor: pointer;
+}
+.back svg { width: 17px; height: 17px; }
+.back:hover { background: var(--le-sunken); color: var(--le-ink); }
+.back:focus-visible { outline: 2px solid var(--le-com); outline-offset: 2px; }
+
+/* Edge to edge. The picture running into the page margins is most of what
+   separates a page from a card with a big image on it. */
+:host(.page) .shot {
+  margin-left: -1rem;
+  margin-right: -1rem;
+  border-radius: 0;
+  border-left: none;
+  border-right: none;
+}
+:host(.page) .shot img { aspect-ratio: 4 / 3; max-height: 46dvh; }
+
+/* The footer stops floating and simply ends the page. */
+:host(.page) .foot {
+  position: static;
+  padding-left: 0;
+  padding-right: 0;
+  background: none;
+  border-top: 1px solid var(--le-rule-soft);
+}

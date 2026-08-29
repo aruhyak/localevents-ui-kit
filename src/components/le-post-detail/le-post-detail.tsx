@@ -4,6 +4,7 @@ import {
   formatDistance, formatWhen, formatRange, formatDailyRun, formatWeekly, untilOf,
   requiresLicence, isSaved, toggleSave, lifecycle,
   threadsOn, threadFor, addReply, sendMessage, canSeeContact, contactHint, updateLocalPost,
+  imageFor,
 } from '@le/shared';
 
 /**
@@ -14,9 +15,10 @@ import {
  * here: the whole description, the photo at full width, the exact place, and
  * the actions.
  *
- * A sheet rather than a route. The feed's scroll position, radius, and map
- * state are expensive to rebuild, and a route change throws all of it away for
- * what is really a closer look at something already on screen.
+ * A page by default (fullPage), because a sheet cannot be linked to, cannot be
+ * dismissed with the phone's back gesture, and leaves the page behind it
+ * half-visible. The cost of a page — losing your place in the feed — is paid
+ * off by the shell remembering the scroll position instead.
  */
 @Component({
   tag: 'le-post-detail',
@@ -25,6 +27,16 @@ import {
 })
 export class LePostDetail {
   @Prop() post!: Post;
+
+  /**
+   * Render as a page rather than a sheet.
+   *
+   * A prop rather than a separate component: everything inside — the
+   * conversation, the contact gate, the save button — is identical, and only
+   * the frame differs. Two components would mean fixing the phone-number rule
+   * twice.
+   */
+  @Prop() fullPage = false;
   @Prop() distanceKm = 0;
   /** Who is looking. Decides whether the poster's number is shown. */
   @Prop() viewerId = '';
@@ -128,7 +140,7 @@ export class LePostDetail {
     this.live = next;
   };
 
-  /** Escape closes, like every other dismissible layer in the app. */
+  /** Escape goes back, like every other dismissible layer in the app. */
   @Listen('keydown', { target: 'document' })
   onKeyDown(e: KeyboardEvent) {
     if (e.key === 'Escape') this.close();
@@ -347,8 +359,8 @@ export class LePostDetail {
       p.kind === 'offer' && requiresLicence((p as OfferPost).trades ?? []);
 
     return (
-      <Host>
-        <div class="scrim" onClick={this.close}>
+      <Host class={{ page: this.fullPage }}>
+        <div class="scrim" onClick={this.fullPage ? undefined : this.close}>
           <div
             class="sheet"
             role="dialog"
@@ -356,7 +368,17 @@ export class LePostDetail {
             aria-label={p.title}
             onClick={(e: MouseEvent) => e.stopPropagation()}
           >
-            <div class="grab" aria-hidden="true"></div>
+            {this.fullPage ? (
+              <button class="back" type="button" onClick={this.close}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M15 18l-6-6 6-6" />
+                </svg>
+                Back
+              </button>
+            ) : (
+              <div class="grab" aria-hidden="true"></div>
+            )}
 
             {/* No dismiss control here. Close in the footer does that job, and
                 two dedicated buttons for one action in a sheet this small is
@@ -380,11 +402,12 @@ export class LePostDetail {
 
               {/* The reason this view exists. A card cannot show a photo
                   without turning the feed into a slideshow. */}
-              {p.imageUrl ? (
-                <figure class="shot">
-                  <img src={p.imageUrl} alt="" loading="lazy" />
-                </figure>
-              ) : null}
+              {/* Always an image. imageFor falls back to the drawn cover, so a
+                  post without a photo opens on something rather than on a gap
+                  where the picture should be. */}
+              <figure class="shot">
+                <img src={imageFor(p)} alt="" />
+              </figure>
 
               <p class="desc">{p.description}</p>
 

@@ -2,13 +2,22 @@ import { Component, Prop, State, Event, EventEmitter, h, Host } from '@stencil/c
 import type { Post, EventPost, RequestPost, OfferPost } from '@le/shared';
 import {
   formatDistance, formatWhen, formatRange, formatDailyRun, formatWeekly, untilOf,
-  requiresLicence, isSaved, toggleSave,
+  requiresLicence, isSaved, toggleSave, imageFor,
 } from '@le/shared';
 
 /**
  * One post in the feed. Renders all three shapes from a single component,
  * because the feed is one stream — splitting into tabs makes a thin feed
  * look dead.
+ *
+ * Image-led: the picture is the card, and the text is its caption. The
+ * description is deliberately absent — it belongs in the detail view. Two
+ * lines of prose per card is what turned thirty events into fifteen screens
+ * of scrolling, and it is not what anyone reads when deciding whether to tap.
+ *
+ * Every post has an image, always: a real photo when someone uploaded one, a
+ * drawn cover otherwise. See imageFor() — an image-led card with a hole in it
+ * is worse than the text card it replaced.
  */
 @Component({
   tag: 'le-post-card',
@@ -18,6 +27,15 @@ import {
 export class LePostCard {
   @Prop() post!: Post;
   @Prop() distanceKm = 0;
+
+  /**
+   * Row layout instead of a full card.
+   *
+   * A mode rather than a separate component, so saving and opening behave
+   * identically in both densities. Two components would drift, and the bug
+   * would be "save works in the list but not the grid".
+   */
+  @Prop() compact = false;
 
   @State() saved = false;
 
@@ -136,7 +154,32 @@ export class LePostCard {
     return e.rsvpCount > 0 ? `${e.rsvpCount} going` : null;
   }
 
+  /** The dense form: thumbnail, two lines, distance. Roughly a third the height. */
+  private renderCompact() {
+    const p = this.post;
+    return (
+      <article
+        class={{ row: true, [`kind-${p.kind}`]: true }}
+        tabindex="0"
+        role="button"
+        onClick={this.open}
+        onKeyDown={this.onKey}
+      >
+        <img class="row-img" src={imageFor(p)} alt="" loading="lazy" decoding="async" />
+        <span class="row-text">
+          <span class="row-title">{p.title}</span>
+          <span class="row-sub">{p.neighbourhood}</span>
+        </span>
+        <span class="row-right">
+          <span class="row-when">{this.whenLine()}</span>
+          <span class="row-dist">{formatDistance(this.distanceKm)}</span>
+        </span>
+      </article>
+    );
+  }
+
   render() {
+    if (this.compact) return <Host class="is-compact">{this.renderCompact()}</Host>;
     const p = this.post;
     const claimed = p.kind === 'request' && (p as RequestPost).claimState === 'claimed';
     const price = this.priceLine();
@@ -150,64 +193,54 @@ export class LePostCard {
           onClick={this.open}
           onKeyDown={this.onKey}
         >
-          <div class="badges">
-            {this.kindBadge()}
-            {this.trustBadges()}
-            {claimed ? <le-badge tone="neutral" label="Claimed" /> : null}
-          </div>
+          <div class="cover">
+            <img src={imageFor(p)} alt="" loading="lazy" decoding="async" />
 
-          <div class="body">
-            <div class="main">
-              <h3 class="title">{p.title}</h3>
-              <p class="desc">{p.description}</p>
+            {/* Over the image, not under it — the badges are what the picture
+                is for, and putting them below costs a whole line of height. */}
+            {/* Trust badges stay on the card. Verified business, an
+                unverified licence, and home access are the things someone
+                weighs BEFORE tapping — moving them into the detail would mean
+                they only see the warning after they are already interested. */}
+            <div class="badges">
+              {this.kindBadge()}
+              {this.trustBadges()}
+              {claimed ? <le-badge tone="neutral" label="Claimed" /> : null}
             </div>
-
-            {/* A thumbnail, not the photo. The card is scanned; the detail
-                view is where the picture is actually looked at. A full-width
-                image here would halve how many posts fit on a screen. */}
-            {p.imageUrl ? (
-              <img class="thumb" src={p.imageUrl} alt="" loading="lazy" decoding="async" />
-            ) : null}
-          </div>
-
-          <div class="meta">
-            <span class="when">{this.whenLine()}</span>
-            <span class="dot" aria-hidden="true">·</span>
-            <span class="dist">{formatDistance(this.distanceKm)}</span>
-            {price ? [
-              <span class="dot" aria-hidden="true">·</span>,
-              <span class="price">{price}</span>,
-            ] : null}
-          </div>
-
-          <div class="author">
-            <span class="avatar" aria-hidden="true">
-              {p.author.displayName.charAt(0)}
-            </span>
-            <span class="name">{p.author.displayName}</span>
-            {p.author.idVerified
-              ? <span class="idv" title="Identity verified">ID&nbsp;✓</span>
-              : null}
-            <span class="hood">{p.neighbourhood}</span>
 
             <button
               class={{ save: true, on: this.saved }}
               type="button"
               aria-pressed={String(this.saved)}
               aria-label={this.saved ? 'Saved — tap to remove' : 'Save this post'}
-              title={this.saved ? 'Saved' : 'Save'}
               onClick={this.onSave}
             >
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path
                   d="M6.5 3.5h11a1 1 0 0 1 1 1v15.2a.6.6 0 0 1-.94.5L12 16.4l-5.56 3.8a.6.6 0 0 1-.94-.5V4.5a1 1 0 0 1 1-1Z"
-                  fill={this.saved ? 'currentColor' : 'none'}
+                  fill={this.saved ? 'currentColor' : 'rgba(9,50,74,0.28)'}
                   stroke="currentColor"
                   stroke-width="1.6"
                   stroke-linejoin="round"
                 />
               </svg>
             </button>
+          </div>
+
+          <div class="text">
+            <h3 class="title">{p.title}</h3>
+            <p class="meta">
+              <span class="when">{this.whenLine()}</span>
+              <span class="dot" aria-hidden="true">·</span>
+              <span class="dist">{formatDistance(this.distanceKm)}</span>
+            </p>
+            <p class="foot">
+              {price ? <span class="price">{price}</span> : null}
+              <span class="who">
+                {p.author.displayName}
+                {p.author.idVerified ? <span class="idv" title="Identity verified">ID&nbsp;✓</span> : null}
+              </span>
+            </p>
           </div>
         </article>
       </Host>

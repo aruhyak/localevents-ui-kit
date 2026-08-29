@@ -50,14 +50,29 @@
   --le-danger-soft: #F6E3DF;
 
 
-  --le-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  /* Two variable faces, self-hosted. See host/public/fonts/fonts.css.
+     Display carries the personality; the UI face stays quiet so it can be read
+     at 13px on a phone in daylight. Both fall back to the system stack, so a
+     failed font request degrades rather than breaks. */
+  --le-display: "Bricolage Grotesque", system-ui, -apple-system, sans-serif;
+  --le-sans: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
   --le-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 
-  --le-r-sm: 4px;
-  --le-r-md: 8px;
+  /* Tracking. Display type needs negative tracking to stop large words looking
+     loose; small uppercase labels need positive, or they set solid. */
+  --le-track-display: -0.035em;
+  --le-track-tight: -0.02em;
+  --le-track-label: 0.08em;
+
+  --le-r-sm: 8px;
+  --le-r-md: 12px;
   --le-r-pill: 100px;
 
-  --le-shadow: 0 1px 2px rgba(9, 50, 74, 0.07), 0 2px 8px rgba(9, 50, 74, 0.05);
+  /* Two layers: a tight contact shadow so the edge reads, and a wide soft one
+     for lift. A single mid-blur shadow is what makes a card look like a 2015
+     card. */
+  --le-shadow: 0 1px 2px rgba(9, 50, 74, 0.05),
+               0 8px 24px -10px rgba(9, 50, 74, 0.18);
 
   /* ── surfaces ──────────────────────────────────────────────────────────
      Shared by the shell AND every fragment, so the whole app reads as one
@@ -79,8 +94,8 @@
     rgba(255, 255, 255, 0.00) 55%
   );
 
-  --le-r-sheet: 26px;      /* a sheet lifted over content */
-  --le-r-card:  14px;      /* cards inside a sheet */
+  --le-r-sheet: 28px;      /* a sheet lifted over content */
+  --le-r-card:  16px;      /* cards inside a sheet */
 
   --le-shadow-sheet: 0 1px 0 rgba(255, 255, 255, 0.75) inset,
                      0 0 0 1px rgba(255, 255, 255, 0.22) inset,
@@ -197,7 +212,11 @@
      the teal and cream rather than Bootstrap's #c0392b, which reads borrowed. */
   --le-danger:      #A8372B;
   --le-danger-soft: #F6E3DF;
-  --le-shadow: 0 1px 2px rgba(9, 50, 74, 0.07), 0 2px 8px rgba(9, 50, 74, 0.05);
+  /* Two layers: a tight contact shadow so the edge reads, and a wide soft one
+     for lift. A single mid-blur shadow is what makes a card look like a 2015
+     card. */
+  --le-shadow: 0 1px 2px rgba(9, 50, 74, 0.05),
+               0 8px 24px -10px rgba(9, 50, 74, 0.18);
 
   /* ── surfaces ──────────────────────────────────────────────────────────
      Shared by the shell AND every fragment, so the whole app reads as one
@@ -208,8 +227,8 @@
   --le-blur:         blur(44px) saturate(190%) brightness(1.06);
   --le-blur-sm:      blur(20px) saturate(165%) brightness(1.04);
 
-  --le-r-sheet: 26px;      /* a sheet lifted over content */
-  --le-r-card:  14px;      /* cards inside a sheet */
+  --le-r-sheet: 28px;      /* a sheet lifted over content */
+  --le-r-card:  16px;      /* cards inside a sheet */
 
   --le-shadow-sheet: 0 1px 0 rgba(255, 255, 255, 0.75) inset,
                      0 0 0 1px rgba(255, 255, 255, 0.22) inset,

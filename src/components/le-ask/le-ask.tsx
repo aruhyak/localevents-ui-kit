@@ -25,6 +25,19 @@ export class LeAsk {
   @Prop() serviceType: ServiceType = 'petcare';
   @Prop() neighbourhood = '';
 
+  /**
+   * Render the form as a page instead of a sheet.
+   *
+   * A compose form is a task, not a peek: it is long, it holds unsaved work,
+   * and it wants the whole screen. As a sheet it also sat over a list it had
+   * no relationship to. In page mode this component renders ONLY the form; in
+   * list mode it renders only the button that navigates here.
+   */
+  @Prop() page = false;
+
+  /** Where the button goes. The fragment knows its own route; this does not. */
+  @Prop() href = '';
+
   @State() open = false;
   @State() error = '';
   @State() posted = false;
@@ -97,32 +110,45 @@ export class LeAsk {
     setTimeout(() => (this.posted = false), 3200);
   };
 
+  componentWillLoad() {
+    // The page IS the form, so there is nothing to open — it starts filled in.
+    if (this.page) this.start();
+  }
+
   render() {
     const d = this.draft;
     const isPets = this.serviceType === 'petcare';
+
+    if (this.page) {
+      return (
+        <Host class="as-page">
+          {this.renderForm(d, isPets)}
+        </Host>
+      );
+    }
 
     return (
       <Host>
         {this.posted ? <p class="toast">Posted — neighbours nearby can see it now.</p> : null}
 
-        <button
+        <a
           class="fab"
-          type="button"
+          href={this.href || '#/feed'}
           aria-label={isPets ? 'Ask for help with a pet' : 'Post a job'}
-          onClick={this.start}
         >
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M20.4 11.6a7.7 7.7 0 0 1-10.3 7.3L4.4 20.4l1.5-5.7a7.7 7.7 0 1 1 14.5-3.1Z"/>
           </svg>
-        </button>
+        </a>
+      </Host>
+    );
+  }
 
-        {this.open ? (
-          <div class="wrap" onClick={this.close}>
-            <div class="sheet" role="dialog" aria-modal="true"
-                 aria-label={isPets ? 'Ask for help with a pet' : 'Post a job'}
-                 onClick={(e: MouseEvent) => e.stopPropagation()}>
-              <div class="grab" aria-hidden="true"></div>
+  private renderForm(d: typeof this.draft, isPets: boolean) {
+    return (
+          <div>
+            <div>
               <h2 class="title">{isPets ? 'Ask a neighbour' : 'Post a job'}</h2>
 
               <label class="f">
@@ -192,15 +218,17 @@ export class LeAsk {
               {this.error ? <p class="err">{this.error}</p> : null}
 
               <div class="foot">
-                <button class="ghost" type="button" onClick={this.close}>Cancel</button>
+                {this.page ? (
+                  <a class="ghost" href={this.href || '#/feed'}>Cancel</a>
+                ) : (
+                  <button class="ghost" type="button" onClick={this.close}>Cancel</button>
+                )}
                 <button class="primary" type="button" onClick={this.submit}>
                   Post it
                 </button>
               </div>
             </div>
           </div>
-        ) : null}
-      </Host>
     );
   }
 }
