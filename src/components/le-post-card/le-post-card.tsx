@@ -238,7 +238,21 @@ export class LePostCard {
               {price ? <span class="price">{price}</span> : null}
               <span class="who">
                 {p.author.displayName}
-                {p.author.idVerified ? <span class="idv" title="Identity verified">ID&nbsp;✓</span> : null}
+                {/* A badge, not a bare tick. The word carries the claim — a lone
+                    checkmark reads as decoration, and this is the one signal
+                    someone weighs before letting a stranger into their home.
+                    The scalloped seal is the shape people already read as
+                    "verified" on every other platform. */}
+                {p.author.idVerified ? (
+                  <span class="idv" title="Identity verified">
+                    ID
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M12 2.2 14.6 4l3.2-.2 1 3 2.6 1.9-1.2 3 1.2 3-2.6 1.9-1 3-3.2-.2L12 21.8 9.4 20l-3.2.2-1-3L2.6 15.3l1.2-3-1.2-3 2.6-1.9 1-3L9.4 4Z" fill="currentColor"/>
+                      <path d="m8.2 12.2 2.7 2.7 5-5.4" fill="none" stroke="var(--le-verified)"
+                            stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </span>
+                ) : null}
               </span>
             </p>
           </div>

@@ -438,7 +438,16 @@ export class LePostDetail {
                 <span class="who">
                   <span class="name">{p.author.displayName}</span>
                   <span class="sub">
-                    {p.author.idVerified ? 'Identity verified' : 'Not ID verified'}
+                    {p.author.idVerified
+                      ? [<span class="idv" title="Identity verified">
+                    ID
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M12 2.2 14.6 4l3.2-.2 1 3 2.6 1.9-1.2 3 1.2 3-2.6 1.9-1 3-3.2-.2L12 21.8 9.4 20l-3.2.2-1-3L2.6 15.3l1.2-3-1.2-3 2.6-1.9 1-3L9.4 4Z" fill="currentColor"/>
+                      <path d="m8.2 12.2 2.7 2.7 5-5.4" fill="none" stroke="var(--le-verified)"
+                            stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </span>, ' Identity verified']
+                      : 'Not ID verified'}
                   </span>
                 </span>
               </div>

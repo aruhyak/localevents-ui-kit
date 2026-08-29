@@ -31,7 +31,21 @@
   --le-biz-soft:   #DEE7ED;
 
   /* status */
-  --le-good:       #2C7A6B;   /* verified — sits beside Cassiopeia */
+  --le-good:       #2C7A6B;
+  /* Verification green — its own token, not --le-good.
+     --le-good is the palette's muted teal for general success; this one has a
+     single job and must be seen at 13px on a card. Semantic colours sit
+     outside the brand accent, which is why a true green is allowed here and
+     nowhere else.
+
+     TWO values, because one cannot do both jobs on a cream ground:
+       -seal  the bright green people read as "verified" — a filled shape, so
+              it only needs 3:1, and it carries the brightness
+       -ink   the darker green for the word and the border, which is small
+              bold text and needs 4.5:1. #16A34A managed only 2.93:1 on Picket
+              Fence and was genuinely hard to read.                          */
+  --le-verified: #15883E;
+  --le-verified-seal: #16A34A;
   --le-good-soft:  #AED0C9;   /* Cassiopeia */
   --le-warn:       #6B5A00;   /* readable text tone for Banana King */
   --le-warn-soft:  #FFFDBF;   /* Banana King, softened */
@@ -125,7 +139,14 @@
     --le-biz:       #AED0C9;   /* Cassiopeia reads as the business tone here */
     --le-biz-soft:  #0B3B45;
 
-    --le-good:      #AED0C9;   /* Cassiopeia */
+    --le-good:      #AED0C9;
+  /* Verification green. Brighter than --le-good, and deliberately its own
+     token: --le-good is the palette's muted teal for general success, while
+     this one has a single job and has to be seen at 13px on a card. Semantic
+     colours sit outside the brand accent, which is why a bright green is
+     allowed here and nowhere else. */
+  --le-verified: #34D399;
+  --le-verified-seal: #34D399;
     --le-good-soft: #10403A;
     --le-warn:      #FFFB08;   /* Banana King */
     --le-warn-soft: #3A3600;
@@ -164,6 +185,13 @@
   --le-biz:       #AED0C9;
   --le-biz-soft:  #0B3B45;
   --le-good:      #AED0C9;
+  /* Verification green. Brighter than --le-good, and deliberately its own
+     token: --le-good is the palette's muted teal for general success, while
+     this one has a single job and has to be seen at 13px on a card. Semantic
+     colours sit outside the brand accent, which is why a bright green is
+     allowed here and nowhere else. */
+  --le-verified: #34D399;
+  --le-verified-seal: #34D399;
   --le-good-soft: #10403A;
   --le-warn:      #FFFB08;
   --le-warn-soft: #3A3600;
@@ -198,6 +226,20 @@
   --le-biz:       #09324A;
   --le-biz-soft:  #DEE7ED;
   --le-good:      #2C7A6B;
+  /* Verification green — its own token, not --le-good.
+     --le-good is the palette's muted teal for general success; this one has a
+     single job and must be seen at 13px on a card. Semantic colours sit
+     outside the brand accent, which is why a true green is allowed here and
+     nowhere else.
+
+     TWO values, because one cannot do both jobs on a cream ground:
+       -seal  the bright green people read as "verified" — a filled shape, so
+              it only needs 3:1, and it carries the brightness
+       -ink   the darker green for the word and the border, which is small
+              bold text and needs 4.5:1. #16A34A managed only 2.93:1 on Picket
+              Fence and was genuinely hard to read.                          */
+  --le-verified: #137A38;
+  --le-verified-seal: #16A34A;
   --le-good-soft: #AED0C9;
   --le-warn:      #6B5A00;
   --le-warn-soft: #FFFDBF;

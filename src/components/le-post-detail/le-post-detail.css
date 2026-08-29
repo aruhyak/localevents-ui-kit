@@ -588,3 +588,30 @@ input, textarea, select { font-size: 16px !important; }
   background: none;
   border-top: 1px solid var(--le-rule-soft);
 }
+
+/* The verified mark beside the poster's name. Green, filled, and the same
+   shape as the one on the card — someone should not have to learn it twice. */
+.sub { display: inline-flex; align-items: center; gap: 0.25rem; }
+/* The verified badge. A tinted pill so it reads as a claim rather than a
+   flourish, sized to sit inside a card's author line without crowding it. */
+.idv {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 5px 3px 9px;
+  border-radius: 100px;
+  /* Solid, not a tint. A filled pill reads far brighter at this size, and the
+     colour is the brightest green that still keeps white text at 4.5:1 on it —
+     #16A34A managed only 3.3:1 and was genuinely hard to read. */
+  background: var(--le-verified);
+  border: none;
+  color: #fff;
+  font-family: var(--le-sans);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  box-shadow: 0 1px 3px -1px color-mix(in srgb, var(--le-verified) 70%, transparent);
+}
+.idv svg { width: 16px; height: 16px; display: block; flex: none; color: #fff; }
