@@ -1,6 +1,9 @@
 import { Component, Prop, State, Event, EventEmitter, h, Host } from '@stencil/core';
 import type { Post, EventPost, RequestPost, OfferPost } from '@le/shared';
-import { formatDistance, formatWhen, formatRange, requiresLicence, isSaved, toggleSave } from '@le/shared';
+import {
+  formatDistance, formatWhen, formatRange, formatDailyRun, untilOf,
+  requiresLicence, isSaved, toggleSave,
+} from '@le/shared';
 
 /**
  * One post in the feed. Renders all three shapes from a single component,
@@ -100,6 +103,11 @@ export class LePostCard {
     const p = this.post;
     if (p.kind === 'event') {
       const e = p as EventPost;
+      // A run with a last day is described by its hours and that last day.
+      // Describing it by its first occurrence gives "ended · repeats" on a
+      // sale that is still going, which is worse than saying nothing.
+      const until = untilOf(e.rrule);
+      if (until !== null) return formatDailyRun(e.startsAt, e.endsAt, until);
       return e.rrule ? `${formatWhen(e.startsAt)} · repeats` : formatWhen(e.startsAt);
     }
     if (p.kind === 'request') {

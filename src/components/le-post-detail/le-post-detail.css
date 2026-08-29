@@ -34,7 +34,9 @@
   flex-direction: column;
   width: 100%;
   max-width: min(34rem, 100vw);
-  max-height: 92dvh;
+  /* Not 100 — leaving scrim visible above makes it read as a sheet over the
+     page rather than a new screen, and gives an obvious place to tap away. */
+  max-height: 88dvh;
   /* Nothing inside may widen the sheet. */
   contain: layout paint;
   border-radius: var(--le-r-sheet) var(--le-r-sheet) 0 0;
@@ -68,10 +70,6 @@
 }
 
 .head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 0.75rem;
   padding: 0.7rem 1.1rem 0;
   flex: none;
 }
@@ -83,26 +81,9 @@
   min-width: 0;
 }
 
-.x {
-  flex: none;
-  width: 34px;
-  height: 34px;
-  display: grid;
-  place-items: center;
-  border: 1px solid rgba(255, 255, 255, 0.45);
-  border-radius: 50%;
-  /* Banana King, as on the compose sheet — the two dismiss controls should
-     read as the same control. */
-  background: var(--le-highlight);
-  color: var(--le-on-highlight);
-  font-size: 0.95rem;
-  line-height: 1;
-  cursor: pointer;
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.55) inset;
-}
-.x:focus-visible { outline: 2px solid var(--le-ink); outline-offset: 2px; }
 
 .body {
+  flex: 1 1 auto;
   min-height: 0;
   min-width: 0;
   overflow-y: auto;
@@ -230,7 +211,11 @@
   display: flex;
   gap: 0.6rem;
   flex: none;
-  padding: 0.75rem 1.1rem calc(0.85rem + env(safe-area-inset-bottom));
+  /* max(), not a bare sum. env(safe-area-inset-bottom) is 0 on a device with
+     no home indicator AND in every desktop emulator, which is why a footer
+     that looks fine in testing can still sit under iOS Safari's bottom
+     toolbar on a real phone. The floor guarantees clearance either way. */
+  padding: 0.75rem 1.1rem max(1.5rem, calc(0.85rem + env(safe-area-inset-bottom)));
   border-top: 1px solid var(--le-rule);
   background: color-mix(in srgb, var(--le-paper) 45%, transparent);
 }

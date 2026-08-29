@@ -1,8 +1,8 @@
 import { Component, Prop, State, Event, EventEmitter, h, Host, Listen } from '@stencil/core';
 import type { Post, EventPost, RequestPost, OfferPost } from '@le/shared';
 import {
-  formatDistance, formatWhen, formatRange, requiresLicence,
-  isSaved, toggleSave, lifecycle,
+  formatDistance, formatWhen, formatRange, formatDailyRun, untilOf,
+  requiresLicence, isSaved, toggleSave, lifecycle,
 } from '@le/shared';
 
 /**
@@ -57,6 +57,8 @@ export class LePostDetail {
     const p = this.post;
     if (p.kind === 'event') {
       const e = p as EventPost;
+      const until = untilOf(e.rrule);
+      if (until !== null) return formatDailyRun(e.startsAt, e.endsAt, until);
       return e.endsAt ? formatRange(e.startsAt, e.endsAt) : formatWhen(e.startsAt);
     }
     if (p.kind === 'request') return formatWhen((p as RequestPost).neededFrom);
@@ -103,6 +105,9 @@ export class LePostDetail {
           >
             <div class="grab" aria-hidden="true"></div>
 
+            {/* No dismiss control here. Close in the footer does that job, and
+                two dedicated buttons for one action in a sheet this small is
+                redundant — the scrim and Escape are still there too. */}
             <header class="head">
               <div class="badges">
                 {p.kind === 'event'
@@ -115,7 +120,6 @@ export class LePostDetail {
                 {p.kind === 'offer' ? <le-badge tone="good" label="Service" /> : null}
                 {state === 'ended' ? <le-badge tone="neutral" label="Finished" /> : null}
               </div>
-              <button class="x" type="button" aria-label="Close" onClick={this.close}>✕</button>
             </header>
 
             <div class="body">
