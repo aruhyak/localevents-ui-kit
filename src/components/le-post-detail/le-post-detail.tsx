@@ -3,7 +3,7 @@ import type { Post, EventPost, RequestPost, OfferPost, Thread } from '@le/shared
 import {
   formatDistance, formatWhen, formatRange, formatDailyRun, formatWeekly, untilOf,
   requiresLicence, isSaved, toggleSave, lifecycle,
-  threadsOn, threadFor, addReply, sendMessage, canSeeContact, contactHint, updateLocalPost,
+  threadsOn, threadFor, addReply, canSeeContact, contactHint, updateLocalPost,
   imageFor,
 } from '@le/shared';
 
@@ -41,6 +41,8 @@ export class LePostDetail {
   /** Who is looking. Decides whether the poster's number is shown. */
   @Prop() viewerId = '';
   @Prop() viewerName = '';
+  /** Whether the viewer is ID-verified, recorded on anything they write. */
+  @Prop() viewerVerified = false;
 
   @State() saved = false;
   @State() threads: Thread[] = [];
@@ -97,25 +99,9 @@ export class LePostDetail {
       authorId: this.viewerId,
       displayName: this.viewerName || 'Someone nearby',
       message,
+      idVerified: this.viewerVerified,
     });
     this.setDraft(this.viewerId, '');
-    this.load();
-    this.working = false;
-  };
-
-  /** Writing back, in an existing conversation. */
-  private send = (helperId: string) => {
-    const message = (this.drafts[helperId] ?? '').trim();
-    if (!message || this.working) return;
-    this.working = true;
-    sendMessage({
-      postId: this.post.id,
-      helperId,
-      authorId: this.viewerId,
-      displayName: this.viewerName || 'Someone nearby',
-      message,
-    });
-    this.setDraft(helperId, '');
     this.load();
     this.working = false;
   };
@@ -199,46 +185,47 @@ export class LePostDetail {
    * to offer, or — once someone has been chosen — that it is taken. Only the
    * chosen person is shown the number.
    */
-  /** One conversation: its messages, and a box to answer in. */
-  private renderThread(t: Thread, canChoose: boolean, chosen: boolean) {
-    const draft = this.drafts[t.helperId] ?? '';
+  /**
+   * One person who got in touch — a row, not a conversation.
+   *
+   * The post used to expand every thread inline, which turned it into a group
+   * chat it is not: what one neighbour wrote sat next to what another did, and
+   * a busy post became a wall. A conversation is between two people, so the
+   * post summarises and the talking happens on its own page.
+   */
+  private renderPerson(t: Thread, canChoose: boolean, chosen: boolean) {
+    const last = t.last;
+    const mine = last.authorId === this.viewerId;
+    // On your OWN post the other party is the helper. On someone else's, the
+    // helper is you — so the person to name is the poster. Without this it
+    // listed you talking to yourself.
+    const isMe = t.helperId === this.viewerId;
+    const other = isMe ? this.current.author.displayName : t.helperName;
+    const otherVerified = isMe ? this.current.author.idVerified : t.helperVerified;
     return (
-      <div class={{ thread: true, chosen }} key={t.helperId}>
-        <div class="thread-top">
-          <span class="thread-who">{t.helperName}</span>
-          {chosen ? <span class="tag">Chosen</span> : null}
-        </div>
-
-        <div class="bubbles">
-          {t.messages.map((m) => (
-            <p class={{ bub: true, me: m.authorId === this.viewerId }} key={m.id}>
-              {m.message}
-            </p>
-          ))}
-        </div>
-
-        <div class="write">
-          <textarea
-            class="write-in"
-            rows={2}
-            maxlength={300}
-            placeholder="Write back…"
-            value={draft}
-            onInput={(e) => this.setDraft(t.helperId, (e.target as HTMLTextAreaElement).value)}
-          ></textarea>
-          <button
-            class="write-btn"
-            type="button"
-            disabled={!draft.trim() || this.working}
-            onClick={() => this.send(t.helperId)}
-          >
-            Send
-          </button>
-        </div>
-
+      <div class={{ person: true, chosen }} key={t.helperId}>
+        <a
+          class="person-open"
+          href={`#/thread?post=${encodeURIComponent(t.postId)}&with=${encodeURIComponent(t.helperId)}`}
+        >
+          <span class="person-top">
+            <span class="person-who">{other}</span>
+            {/* Beside the name, because "who is this" is the question being
+                asked at that moment — not after opening the conversation. */}
+            {otherVerified ? (
+              <span class="vbadge" title="Identity verified">ID <svg class="vtick" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2 14.6 4l3.2-.2 1 3 2.6 1.9-1.2 3 1.2 3-2.6 1.9-1 3-3.2-.2L12 21.8 9.4 20l-3.2.2-1-3L2.6 15.3l1.2-3-1.2-3 2.6-1.9 1-3L9.4 4Z" fill="currentColor"/><path d="m8.2 12.2 2.7 2.7 5-5.4" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            ) : null}
+            {chosen ? <span class="tag">Chosen</span> : null}
+            <span class="person-n">{t.messages.length}</span>
+          </span>
+          <span class="person-last">
+            {mine ? <span class="person-you">You: </span> : null}
+            {last.message}
+          </span>
+        </a>
         {canChoose ? (
           <button class="pick" type="button" onClick={() => this.choose(t)}>
-            Choose {t.helperName.split(' ')[0]}
+            Choose {other.split(' ')[0]}
           </button>
         ) : null}
       </div>
@@ -294,10 +281,10 @@ export class LePostDetail {
               {this.threads.length === 0
                 ? isRequest ? 'No replies yet' : 'Nobody has been in touch yet'
                 : `${this.threads.length} ${this.threads.length === 1 ? 'person' : 'people'} ` +
-                  (isRequest ? 'offered' : 'got in touch')}
+                  (isRequest ? 'offered to help' : 'got in touch')}
             </h3>
             {this.threads.map((t) =>
-              this.renderThread(t, isRequest && open, t.helperId === r.claimedBy))}
+              this.renderPerson(t, isRequest && open, t.helperId === r.claimedBy))}
             {this.threads.length === 0 ? (
               <p class="req-d">
                 {isRequest
@@ -315,7 +302,7 @@ export class LePostDetail {
                   ? 'They went with someone else'
                   : 'Your conversation'}
             </h3>
-            {this.renderThread(myThread, false, r.claimedBy === this.viewerId)}
+            {this.renderPerson(myThread, false, r.claimedBy === this.viewerId)}
           </div>
         ) : isRequest && !open ? (
           <p class="req-d">Someone else is helping with this one.</p>

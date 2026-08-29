@@ -228,7 +228,7 @@ input, textarea, select { font-size: 16px !important; }
 :host(.as-page) { display: block; }
 
 :host(.as-page) .sheet,
-:host(.as-page) div > div {
+:host(.as-page) .form {
   max-width: none;
   max-height: none;
   overflow: visible;
@@ -244,8 +244,10 @@ input, textarea, select { font-size: 16px !important; }
 
 :host(.as-page) .title { margin-top: 0; }
 
-/* The sheet supplied the gap between fields; in page mode the wrapper has to. */
-:host(.as-page) div > div {
+/* The sheet supplied the gap between fields; in page mode the wrapper has to.
+   Scoped to .form, not `div > div` — that matched EVERY nested div, including
+   the date row, and forced From/To into a stacked column. */
+:host(.as-page) .form {
   display: flex;
   flex-direction: column;
   gap: 0.7rem;

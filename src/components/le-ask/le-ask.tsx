@@ -148,8 +148,8 @@ export class LeAsk {
 
   private renderForm(d: typeof this.draft, isPets: boolean) {
     return (
-          <div>
-            <div>
+          <div class="form-wrap">
+            <div class="form">
               <h2 class="title">{isPets ? 'Ask a neighbour' : 'Post a job'}</h2>
 
               <label class="f">
