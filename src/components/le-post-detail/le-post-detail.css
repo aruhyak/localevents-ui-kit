@@ -264,3 +264,249 @@
    never zooms back out. No text fields here, but the floor costs nothing and
    stops the bug returning if one is added. */
 input, textarea, select { font-size: 16px !important; }
+
+/* ── help requests: replies, choosing, and the number ────────────────────── */
+
+.req {
+  margin-top: 0.9rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--le-rule-soft);
+  min-width: 0;
+}
+
+.req-h {
+  display: block;
+  margin: 0 0 0.5rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--le-ink);
+}
+
+.req-d {
+  margin: 0;
+  font-size: 0.84rem;
+  line-height: 1.5;
+  color: var(--le-ink-2);
+}
+
+/* The number, once it has been released. Deliberately the loudest thing in
+   the sheet — it is the whole point of the exchange. */
+.contact {
+  margin-bottom: 0.9rem;
+  padding: 0.75rem 0.9rem;
+  border-radius: var(--le-r-card);
+  background: color-mix(in srgb, var(--le-good-soft) 60%, transparent);
+  border: 1px solid color-mix(in srgb, var(--le-good) 34%, transparent);
+}
+.contact-k {
+  margin: 0 0 0.15rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--le-ink-3);
+}
+.contact-v {
+  display: inline-block;
+  font-size: 1.15rem;
+  font-weight: 750;
+  letter-spacing: 0.01em;
+  color: var(--le-ink);
+  text-decoration: none;
+  font-variant-numeric: tabular-nums;
+}
+.contact-v:hover { text-decoration: underline; }
+.contact-note {
+  margin: 0.3rem 0 0;
+  font-size: 0.74rem;
+  color: var(--le-ink-2);
+}
+
+/* Withheld, and saying so. Silence would read as "there is no number". */
+.locked {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.45rem;
+  margin: 0 0 0.9rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: var(--le-r-sm);
+  background: var(--le-sunken);
+  border: 1px dashed var(--le-rule);
+  font-size: 0.79rem;
+  line-height: 1.45;
+  color: var(--le-ink-2);
+}
+.lock { flex: none; font-size: 0.85rem; }
+
+.replies { display: flex; flex-direction: column; gap: 0.5rem; min-width: 0; }
+
+
+.tag {
+  flex: none;
+  padding: 0.1rem 0.4rem;
+  border-radius: var(--le-r-pill);
+  background: var(--le-good);
+  color: var(--le-paper);
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.pick {
+  margin-top: 0.5rem;
+  padding: 0.4rem 0.8rem;
+  border: 1px solid var(--le-rule);
+  border-radius: var(--le-r-pill);
+  background: var(--le-paper);
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 650;
+  color: var(--le-ink);
+  cursor: pointer;
+}
+.pick:hover { background: var(--le-highlight); border-color: transparent; color: var(--le-on-highlight); }
+.pick:focus-visible { outline: 2px solid var(--le-com); outline-offset: 2px; }
+
+.offer { display: flex; flex-direction: column; gap: 0.5rem; min-width: 0; }
+
+.offer-in {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  resize: vertical;
+  padding: 0.6rem 0.7rem;
+  border-radius: var(--le-r-sm);
+  border: 1px solid var(--le-rule);
+  background: color-mix(in srgb, var(--le-paper) 85%, transparent);
+  font-family: inherit;
+  line-height: 1.5;
+  color: var(--le-ink);
+}
+.offer-in:focus {
+  outline: none;
+  border-color: var(--le-com);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--le-com) 18%, transparent);
+}
+
+.offer-btn {
+  align-self: flex-start;
+  padding: 0.55rem 1.1rem;
+  border: none;
+  border-radius: var(--le-r-pill);
+  background: var(--le-ink);
+  color: var(--le-paper);
+  font-family: inherit;
+  font-size: 0.86rem;
+  font-weight: 650;
+  cursor: pointer;
+}
+.offer-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.offer-btn:focus-visible { outline: 2px solid var(--le-com); outline-offset: 2px; }
+
+/* ── conversations ───────────────────────────────────────────────────────── */
+
+.thread {
+  min-width: 0;
+  padding: 0.7rem 0.8rem 0.75rem;
+  border-radius: var(--le-r-sm);
+  background: color-mix(in srgb, var(--le-paper) 70%, transparent);
+  border: 1px solid var(--le-rule-soft);
+}
+.thread.chosen {
+  background: color-mix(in srgb, var(--le-good-soft) 42%, transparent);
+  border-color: color-mix(in srgb, var(--le-good) 30%, transparent);
+}
+
+.thread-top {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-width: 0;
+  margin-bottom: 0.45rem;
+}
+.thread-who {
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: var(--le-ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tag {
+  flex: none;
+  padding: 0.1rem 0.4rem;
+  border-radius: var(--le-r-pill);
+  background: var(--le-good);
+  color: var(--le-paper);
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.bubbles {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 0;
+  margin-bottom: 0.5rem;
+}
+
+/* Sides, not colours alone — who said what has to survive a grayscale screen
+   and anyone who cannot separate the two hues. */
+.bub {
+  max-width: 85%;
+  margin: 0;
+  padding: 0.45rem 0.65rem;
+  border-radius: 12px 12px 12px 3px;
+  align-self: flex-start;
+  background: var(--le-surface);
+  border: 1px solid var(--le-rule-soft);
+  font-size: 0.84rem;
+  line-height: 1.45;
+  color: var(--le-ink-2);
+  overflow-wrap: anywhere;
+}
+.bub.me {
+  align-self: flex-end;
+  border-radius: 12px 12px 3px 12px;
+  background: color-mix(in srgb, var(--le-com) 14%, transparent);
+  border-color: color-mix(in srgb, var(--le-com) 26%, transparent);
+  color: var(--le-ink);
+}
+
+.write { display: flex; gap: 0.4rem; align-items: flex-end; min-width: 0; }
+
+.write-in {
+  flex: 1 1 auto;
+  min-width: 0;
+  resize: vertical;
+  padding: 0.45rem 0.6rem;
+  border-radius: var(--le-r-sm);
+  border: 1px solid var(--le-rule);
+  background: var(--le-surface);
+  font-family: inherit;
+  line-height: 1.45;
+  color: var(--le-ink);
+}
+.write-in:focus {
+  outline: none;
+  border-color: var(--le-com);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--le-com) 16%, transparent);
+}
+
+.write-btn {
+  flex: none;
+  padding: 0.5rem 0.85rem;
+  border: none;
+  border-radius: var(--le-r-pill);
+  background: var(--le-ink);
+  color: var(--le-paper);
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 650;
+  cursor: pointer;
+}
+.write-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.write-btn:focus-visible { outline: 2px solid var(--le-com); outline-offset: 2px; }
+
+.thread + .thread { margin-top: 0.5rem; }

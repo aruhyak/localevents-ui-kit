@@ -1,7 +1,7 @@
 import { Component, Prop, State, Event, EventEmitter, h, Host } from '@stencil/core';
 import type { Post, EventPost, RequestPost, OfferPost } from '@le/shared';
 import {
-  formatDistance, formatWhen, formatRange, formatDailyRun, untilOf,
+  formatDistance, formatWhen, formatRange, formatDailyRun, formatWeekly, untilOf,
   requiresLicence, isSaved, toggleSave,
 } from '@le/shared';
 
@@ -108,6 +108,10 @@ export class LePostCard {
       // sale that is still going, which is worse than saying nothing.
       const until = untilOf(e.rrule);
       if (until !== null) return formatDailyRun(e.startsAt, e.endsAt, until);
+      // A weekly listing is described by the day it recurs on, not by the date
+      // of one occurrence.
+      const weekly = formatWeekly(e.rrule, e.startsAt);
+      if (weekly) return weekly;
       return e.rrule ? `${formatWhen(e.startsAt)} · repeats` : formatWhen(e.startsAt);
     }
     if (p.kind === 'request') {
@@ -152,8 +156,19 @@ export class LePostCard {
             {claimed ? <le-badge tone="neutral" label="Claimed" /> : null}
           </div>
 
-          <h3 class="title">{p.title}</h3>
-          <p class="desc">{p.description}</p>
+          <div class="body">
+            <div class="main">
+              <h3 class="title">{p.title}</h3>
+              <p class="desc">{p.description}</p>
+            </div>
+
+            {/* A thumbnail, not the photo. The card is scanned; the detail
+                view is where the picture is actually looked at. A full-width
+                image here would halve how many posts fit on a screen. */}
+            {p.imageUrl ? (
+              <img class="thumb" src={p.imageUrl} alt="" loading="lazy" decoding="async" />
+            ) : null}
+          </div>
 
           <div class="meta">
             <span class="when">{this.whenLine()}</span>

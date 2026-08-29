@@ -17,6 +17,10 @@
     "./post-detail": {
       "types": "./dist/components/le-post-detail.d.ts",
       "import": "./dist/components/le-post-detail.js"
+    },
+    "./ask": {
+      "types": "./dist/components/le-ask.d.ts",
+      "import": "./dist/components/le-ask.js"
     }
   },
   "files": [
@@ -30,7 +34,7 @@
     "prepare": "stencil build"
   },
   "dependencies": {
-    "@le/shared": "github:aruhyak/localevents-shared#v0.12.0"
+    "@le/shared": "github:aruhyak/localevents-shared#v0.13.0"
   },
   "devDependencies": {
     "@stencil/core": "^4.22.2",

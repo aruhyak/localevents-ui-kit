@@ -162,3 +162,37 @@
   .card { transition: none; }
   .card:hover { transform: none; }
 }
+
+/* ── thumbnail ──────────────────────────────────────────────────────────── */
+
+.body {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  /* 0, not auto: without it a long word in the title sets the row's floor and
+     pushes the thumbnail out of the card. */
+  min-width: 0;
+}
+
+.main {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.thumb {
+  flex: none;
+  width: 76px;
+  height: 76px;
+  border-radius: var(--le-r-sm, 8px);
+  object-fit: cover;
+  background: var(--le-sunken, #eceade);
+  border: 1px solid var(--le-rule-soft, #e2e2dc);
+}
+
+/* Narrow phones need the width for words more than for a picture. */
+@media (max-width: 340px) {
+  .thumb { display: none; }
+}

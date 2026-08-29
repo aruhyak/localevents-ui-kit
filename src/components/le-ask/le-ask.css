@@ -1,0 +1,220 @@
+/* Shadow DOM does NOT inherit the host page's reset. */
+*, *::before, *::after { box-sizing: border-box; }
+
+:host { font-family: var(--le-sans); color: var(--le-ink); }
+
+/* Fixed, and clear of the tab bar — the shell publishes its measured height. */
+.fab {
+  position: fixed;
+  z-index: 20;
+  bottom: calc(var(--le-tabbar-h, 3.5rem) + 1rem);
+  right: max(1rem, calc(50% - 17rem + 1rem));
+  width: 54px;
+  height: 54px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 34% 28%, rgba(255,255,255,0.55) 0%, transparent 55%),
+    var(--le-highlight);
+  color: var(--le-on-highlight);
+  cursor: pointer;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.6) inset,
+              0 8px 22px -6px rgba(9,50,74,0.55);
+}
+.fab svg { width: 24px; height: 24px; }
+.fab:active { transform: scale(0.96); }
+.fab:focus-visible { outline: 2px solid var(--le-ink); outline-offset: 3px; }
+
+.toast {
+  position: fixed;
+  z-index: 30;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: calc(var(--le-tabbar-h, 3.5rem) + 4.6rem);
+  margin: 0;
+  padding: 0.5rem 0.9rem;
+  border-radius: var(--le-r-pill);
+  background: var(--le-ink);
+  color: var(--le-paper);
+  font-size: 0.82rem;
+  font-weight: 600;
+  box-shadow: var(--le-shadow-card);
+}
+
+.wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  /* dvh, not vh — vh includes the area behind mobile browser chrome. */
+  height: 100dvh;
+  overflow: hidden;
+  background: rgba(9, 50, 74, 0.42);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
+
+.sheet {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  width: 100%;
+  max-width: min(34rem, 100vw);
+  max-height: 90dvh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  contain: layout paint;
+  padding: 0.6rem 1.1rem max(1.5rem, calc(0.9rem + env(safe-area-inset-bottom)));
+  border-radius: var(--le-r-sheet) var(--le-r-sheet) 0 0;
+  background: var(--le-sheen), var(--le-glass-strong);
+  backdrop-filter: var(--le-blur);
+  -webkit-backdrop-filter: var(--le-blur);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-bottom: none;
+  box-shadow: var(--le-shadow-sheet);
+}
+@supports not (backdrop-filter: blur(1px)) { .sheet { background: var(--le-surface); } }
+
+.grab { width: 38px; height: 4px; margin: 0 auto; border-radius: 2px; background: var(--le-rule); flex: none; }
+
+.title { margin: 0.2rem 0 0.2rem; font-size: 1.25rem; font-weight: 800; letter-spacing: -0.02em; }
+
+.f { display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; }
+.k { font-size: 0.78rem; font-weight: 700; color: var(--le-ink); }
+.k em { font-style: normal; font-weight: 500; color: var(--le-ink-3); }
+
+.in {
+  width: 100%;
+  min-width: 0;
+  padding: 0.6rem 0.7rem;
+  border-radius: var(--le-r-md);
+  border: 1px solid var(--le-rule);
+  background: color-mix(in srgb, var(--le-paper) 85%, transparent);
+  font-family: inherit;
+  color: var(--le-ink);
+}
+.in:focus {
+  outline: none;
+  border-color: var(--le-com);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--le-com) 18%, transparent);
+}
+.area { resize: vertical; line-height: 1.5; }
+
+.note { margin: 0.25rem 0 0; font-size: 0.74rem; line-height: 1.45; color: var(--le-ink-3); }
+
+/* One card, two dates — the same shape the event sheet uses, so the two forms
+   feel like one app. */
+.range {
+  display: flex;
+  align-items: stretch;
+  min-width: 0;
+  border: 1px solid var(--le-rule);
+  border-radius: var(--le-r-md);
+  background: color-mix(in srgb, var(--le-paper) 85%, transparent);
+  overflow: hidden;
+}
+.r {
+  flex: 1 1 0;
+  /* 0, not auto — a date input's content would otherwise set the floor and
+     the row would grow rather than split evenly. */
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding: 0.45rem 0.7rem 0.5rem;
+}
+.rk {
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--le-ink-3);
+}
+.r input {
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: inherit;
+  font-weight: 600;
+  color: var(--le-ink);
+}
+.r input:focus { outline: none; }
+.r:focus-within { background: color-mix(in srgb, var(--le-com) 9%, transparent); }
+.arrow {
+  display: grid;
+  place-items: center;
+  padding: 0 0.15rem;
+  font-size: 0.85rem;
+  color: var(--le-ink-3);
+  border-left: 1px solid var(--le-rule);
+  border-right: 1px solid var(--le-rule);
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  width: 100%;
+  min-width: 0;
+  text-align: left;
+  padding: 0.6rem 0.7rem;
+  border: 1px solid var(--le-rule);
+  border-radius: var(--le-r-md);
+  background: none;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--le-ink);
+  cursor: pointer;
+}
+.toggle.on { border-color: var(--le-com); background: color-mix(in srgb, var(--le-com) 10%, transparent); }
+.toggle:focus-visible { outline: 2px solid var(--le-com); outline-offset: 2px; }
+.box {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  border: 1.5px solid var(--le-rule);
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+.toggle.on .box { background: var(--le-com); border-color: transparent; color: var(--le-paper); }
+
+
+.err {
+  margin: 0;
+  padding: 0.5rem 0.7rem;
+  border-radius: var(--le-r-sm);
+  background: color-mix(in srgb, var(--le-danger-soft) 55%, transparent);
+  border: 1px solid color-mix(in srgb, var(--le-danger) 32%, transparent);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--le-ink);
+}
+
+.foot { display: flex; gap: 0.6rem; margin-top: 0.2rem; }
+.ghost, .primary {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 0.7rem 1rem;
+  border-radius: var(--le-r-pill);
+  font-family: inherit;
+  font-size: 0.92rem;
+  font-weight: 650;
+  cursor: pointer;
+}
+.ghost { border: 1px solid var(--le-rule); background: none; color: var(--le-ink); }
+.primary { border: none; background: var(--le-highlight); color: var(--le-on-highlight); }
+.primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* iOS Safari zooms the whole page when a field under 16px takes focus and
+   never zooms back out. */
+input, textarea, select { font-size: 16px !important; }
