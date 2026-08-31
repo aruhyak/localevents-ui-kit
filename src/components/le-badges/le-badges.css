@@ -1,0 +1,44 @@
+/* Sits inline beside a name, so it must not add height to the line it is on. */
+:host {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  vertical-align: middle;
+  /* Never squashed when the name beside it is long — the name truncates
+     instead, because a half-drawn badge is worse than a shortened name. */
+  flex: none;
+}
+
+/* Nothing verified means nothing at all: no gap, no stray margin. */
+:host(.empty) { display: none; }
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2em;
+  border-radius: 100px;
+  /* Solid rather than a tint. A filled pill reads far brighter at this size,
+     and this is the brightest green that still keeps white at 4.5:1 on it. */
+  background: var(--le-verified, #12b551);
+  color: #fff;
+  font-family: var(--le-sans, system-ui, sans-serif);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  box-shadow: 0 1px 3px -1px color-mix(in srgb, var(--le-verified, #12b551) 70%, transparent);
+}
+
+.label { display: block; }
+.tick, .glyph { display: block; flex: none; }
+
+/* The phone glyph is drawn in outline, so it needs a touch more room than the
+   two letters of ID to look like the same weight of mark. */
+.phone { padding-left: 0.36em; }
+
+:host(.sm) .badge  { font-size: 0.72rem; padding: 2px 4px 2px 6px; }
+:host(.sm) .tick   { width: 13px; height: 13px; }
+:host(.sm) .glyph  { width: 11px; height: 11px; }
+
+:host(.md) .badge  { font-size: 0.78rem; padding: 3px 5px 3px 9px; }
+:host(.md) .tick   { width: 16px; height: 16px; }
+:host(.md) .glyph  { width: 13px; height: 13px; }

@@ -620,3 +620,20 @@ input, textarea, select { font-size: 16px !important; }
   cursor: pointer;
 }
 .pick:hover { background: var(--le-highlight); }
+
+/* The words beside the badges. Quieter than the name, because it is a
+   qualifier on the name rather than a second heading. */
+.sub {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+
+.vwords {
+  font-family: var(--le-sans);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--le-muted);
+  letter-spacing: 0.01em;
+}

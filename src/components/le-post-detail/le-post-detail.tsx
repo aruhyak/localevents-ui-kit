@@ -20,6 +20,20 @@ import {
  * half-visible. The cost of a page — losing your place in the feed — is paid
  * off by the shell remembering the scroll position instead.
  */
+/**
+ * What has actually been checked about this person, in words.
+ *
+ * The badges say what was verified. This says what was NOT, which is the half
+ * someone weighs when deciding whether to let a stranger into their house —
+ * and the half a row of ticks quietly omits.
+ */
+function authorProof(a: { idVerified: boolean; phoneVerified?: boolean }): string {
+  if (a.idVerified && a.phoneVerified) return 'ID and phone confirmed';
+  if (a.idVerified) return 'ID confirmed · no phone on file';
+  if (a.phoneVerified) return 'Phone confirmed · ID not checked';
+  return 'Nothing verified yet';
+}
+
 @Component({
   tag: 'le-post-detail',
   styleUrl: 'le-post-detail.css',
@@ -202,6 +216,9 @@ export class LePostDetail {
     const isMe = t.helperId === this.viewerId;
     const other = isMe ? this.current.author.displayName : t.helperName;
     const otherVerified = isMe ? this.current.author.idVerified : t.helperVerified;
+    const otherPhone = isMe
+      ? this.current.author.phoneVerified === true
+      : t.helperPhoneVerified;
     return (
       <div class={{ person: true, chosen }} key={t.helperId}>
         <a
@@ -212,9 +229,7 @@ export class LePostDetail {
             <span class="person-who">{other}</span>
             {/* Beside the name, because "who is this" is the question being
                 asked at that moment — not after opening the conversation. */}
-            {otherVerified ? (
-              <span class="vbadge" title="Identity verified">ID <svg class="vtick" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2 14.6 4l3.2-.2 1 3 2.6 1.9-1.2 3 1.2 3-2.6 1.9-1 3-3.2-.2L12 21.8 9.4 20l-3.2.2-1-3L2.6 15.3l1.2-3-1.2-3 2.6-1.9 1-3L9.4 4Z" fill="currentColor"/><path d="m8.2 12.2 2.7 2.7 5-5.4" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-            ) : null}
+            <le-badges idVerified={otherVerified} phoneVerified={otherPhone} size="sm" />
             {chosen ? <span class="tag">Chosen</span> : null}
             <span class="person-n">{t.messages.length}</span>
           </span>
@@ -425,16 +440,16 @@ export class LePostDetail {
                 <span class="who">
                   <span class="name">{p.author.displayName}</span>
                   <span class="sub">
-                    {p.author.idVerified
-                      ? [<span class="idv" title="Identity verified">
-                    ID
-                    <svg viewBox="0 0 24 24" aria-hidden="true">
-                      <path d="M12 2.2 14.6 4l3.2-.2 1 3 2.6 1.9-1.2 3 1.2 3-2.6 1.9-1 3-3.2-.2L12 21.8 9.4 20l-3.2.2-1-3L2.6 15.3l1.2-3-1.2-3 2.6-1.9 1-3L9.4 4Z" fill="currentColor"/>
-                      <path d="m8.2 12.2 2.7 2.7 5-5.4" fill="none" stroke="var(--le-verified)"
-                            stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                  </span>, ' Identity verified']
-                      : 'Not ID verified'}
+                    <le-badges
+                      idVerified={p.author.idVerified}
+                      phoneVerified={p.author.phoneVerified === true}
+                      size="md"
+                    />
+                    {/* Spell out what is and is not checked. A badge alone
+                        tells you what was verified; only words tell you what
+                        was not, and that is the half that matters when you are
+                        deciding whether to hand over a key. */}
+                    <span class="vwords">{authorProof(p.author)}</span>
                   </span>
                 </span>
               </div>
