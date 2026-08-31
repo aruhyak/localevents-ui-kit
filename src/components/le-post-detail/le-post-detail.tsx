@@ -57,6 +57,8 @@ export class LePostDetail {
   @Prop() viewerName = '';
   /** Whether the viewer is ID-verified, recorded on anything they write. */
   @Prop() viewerVerified = false;
+  /** Whether you have confirmed a phone number, stamped onto what you write. */
+  @Prop() viewerPhoneVerified = false;
 
   @State() saved = false;
   @State() threads: Thread[] = [];
@@ -114,6 +116,7 @@ export class LePostDetail {
       displayName: this.viewerName || 'Someone nearby',
       message,
       idVerified: this.viewerVerified,
+      phoneVerified: this.viewerPhoneVerified,
     });
     this.setDraft(this.viewerId, '');
     this.load();
