@@ -60,6 +60,27 @@ export class LePostDetail {
   /** Whether you have confirmed a phone number, stamped onto what you write. */
   @Prop() viewerPhoneVerified = false;
 
+  /**
+   * Conversations from the server, supplied by the shell.
+   *
+   * Its presence is also the switch between the two modes: with it, this
+   * component asks the shell to write and never touches storage; without it,
+   * it does everything on the device, which is how the static build works.
+   *
+   * Undefined and empty mean different things, as everywhere else here — no
+   * server versus a server that says nobody has replied.
+   */
+  @Prop() serverThreads?: unknown[];
+
+  /**
+   * The live post from the server, replacing what the feed had.
+   *
+   * This is how contactPhone arrives: the feed never carries it, so a detail
+   * view built only from the feed's copy could not show a number even to the
+   * person entitled to it.
+   */
+  @Prop() serverPost?: unknown;
+
   @State() saved = false;
   @State() threads: Thread[] = [];
   /** One draft per conversation, keyed by the helper's id. */
@@ -70,6 +91,21 @@ export class LePostDetail {
 
   @Event({ eventName: 'le:close-post', bubbles: true, composed: true })
   closePost!: EventEmitter<void>;
+
+  /**
+   * Offering to help, and choosing someone.
+   *
+   * These leave the fragment because they are writes, and every write in this
+   * app goes through the shell: it holds the session and knows where the
+   * server is. More importantly, choosing someone is what RELEASES A PHONE
+   * NUMBER — a decision that cannot be made on the device that benefits from
+   * it. The server decides, in a guarded UPDATE, and this event only asks.
+   */
+  @Event({ eventName: 'le:offer-help', bubbles: true, composed: true })
+  offerHelpEvent!: EventEmitter<{ postId: string; message: string }>;
+
+  @Event({ eventName: 'le:choose-helper', bubbles: true, composed: true })
+  chooseHelperEvent!: EventEmitter<{ postId: string; helperId: string; helperName: string }>;
 
   @Event({ eventName: 'le:toggle-save', bubbles: true, composed: true })
   toggleSaved!: EventEmitter<{ id: string; saved: boolean }>;
@@ -82,7 +118,10 @@ export class LePostDetail {
 
   /** The post as it stands now — the prop is a snapshot from before a claim. */
   private get current(): Post {
-    return this.live ?? this.post;
+    // The server's copy wins where there is one: it is the only version that
+    // can carry contactPhone, and it is the only version whose claimState
+    // reflects what actually happened rather than what this device hoped.
+    return (this.serverPost as Post) ?? this.live ?? this.post;
   }
 
   private get isOwner(): boolean {
@@ -94,7 +133,22 @@ export class LePostDetail {
    * their own. Filtering here rather than in the template keeps the rule in
    * one place — it is the same rule that decides what leaks.
    */
+  /**
+   * Conversations to show.
+   *
+   * When the shell supplies them they are already filtered BY THE SERVER,
+   * which is the only filtering that counts: a helper is sent only their own
+   * thread, so there is nothing here to accidentally reveal. The filter below
+   * still runs for the local path, where the device holds everything.
+   *
+   * Two layers of the same rule is not duplication worth removing. The one
+   * that matters is the server's; this one keeps the local build honest.
+   */
   private load() {
+    if (this.serverThreads) {
+      this.threads = this.serverThreads as Thread[];
+      return;
+    }
     const all = threadsOn(this.post.id);
     this.threads = this.isOwner
       ? all
@@ -110,6 +164,16 @@ export class LePostDetail {
     const message = (this.drafts[this.viewerId] ?? '').trim();
     if (!message || this.working) return;
     this.working = true;
+
+    if (this.serverThreads) {
+      // The shell writes it and hands back new threads. The draft is NOT
+      // cleared yet — if the send fails, clearing it would delete what someone
+      // typed and leave nothing to retry with.
+      this.offerHelpEvent.emit({ postId: this.post.id, message });
+      this.working = false;
+      return;
+    }
+
     addReply({
       postId: this.post.id,
       authorId: this.viewerId,
@@ -134,6 +198,17 @@ export class LePostDetail {
       `Nobody else who replied will.`,
     );
     if (!ok) return;
+
+    if (this.serverThreads) {
+      // Ask; do not assume. Writing claimState here would show the number as
+      // released before the server agreed, and two people racing to be chosen
+      // would both see themselves win.
+      this.chooseHelperEvent.emit({
+        postId: this.post.id, helperId: t.helperId, helperName: t.helperName,
+      });
+      return;
+    }
+
     const next: RequestPost = {
       ...(this.current as RequestPost),
       claimState: 'claimed',
