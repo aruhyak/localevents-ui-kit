@@ -31,14 +31,20 @@
 .label { display: block; }
 .tick, .glyph { display: block; flex: none; }
 
+/* The check is the pill's own green, punched out of the white seal. A white
+   check on a white seal is invisible, and nothing anywhere fails when a tick
+   is the same colour as what is behind it — which is how the badge this
+   replaced rendered as a plain dot for its whole life. */
+.tick .check { stroke: var(--le-verified, #12b551); }
+
 /* The phone glyph is drawn in outline, so it needs a touch more room than the
    two letters of ID to look like the same weight of mark. */
 .phone { padding-left: 0.36em; }
 
 :host(.sm) .badge  { font-size: 0.72rem; padding: 2px 4px 2px 6px; }
-:host(.sm) .tick   { width: 13px; height: 13px; }
+:host(.sm) .tick   { width: 15px; height: 15px; }
 :host(.sm) .glyph  { width: 11px; height: 11px; }
 
 :host(.md) .badge  { font-size: 0.78rem; padding: 3px 5px 3px 9px; }
-:host(.md) .tick   { width: 16px; height: 16px; }
+:host(.md) .tick   { width: 18px; height: 18px; }
 :host(.md) .glyph  { width: 13px; height: 13px; }
