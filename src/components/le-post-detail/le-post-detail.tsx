@@ -145,6 +145,11 @@ export class LePostDetail {
    * that matters is the server's; this one keeps the local build honest.
    */
   private load() {
+    // Without a post there is no id to look conversations up by. This used to
+    // throw at mount, which took the whole page down and left a blank screen
+    // with nothing in the console pointing here — a missing required prop
+    // should degrade, not detonate.
+    if (!this.current) { this.threads = []; return; }
     if (this.serverThreads) {
       this.threads = this.serverThreads as Thread[];
       return;
@@ -430,6 +435,11 @@ export class LePostDetail {
   }
 
   render() {
+    // Nothing to draw. Rendering null is a visible nothing that the shell can
+    // replace; throwing is an invisible nothing that looks like a dead app.
+    if (!this.current) return null;
+
+
     const p = this.current;
     const when = this.whenLine();
     const price = this.priceLine();
